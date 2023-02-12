@@ -46,7 +46,7 @@ public class SettingsFragment extends PreferenceFragment {
                 // Storing data into SharedPreferences
                 SharedPreferences sharedPreferences = getActivity().getSharedPreferences("directory", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
-                myEdit.putString("directory", String.valueOf(data.getData()));
+                myEdit.putString("directory", String.valueOf(data.getData().getPath()));
                 myEdit.commit();
                 break;
         }

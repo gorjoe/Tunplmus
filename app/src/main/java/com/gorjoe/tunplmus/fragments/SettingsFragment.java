@@ -3,17 +3,29 @@ package com.gorjoe.tunplmus.fragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
+import androidx.documentfile.provider.DocumentFile;
+
+import com.bluewhaleyt.filemanagement.FileUtil;
+import com.gorjoe.tunplmus.FileUtil2;
 import com.gorjoe.tunplmus.R;
+
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -46,7 +58,10 @@ public class SettingsFragment extends PreferenceFragment {
                 // Storing data into SharedPreferences
                 SharedPreferences sharedPreferences = getActivity().getSharedPreferences("directory", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
-                myEdit.putString("directory", String.valueOf(data.getData().getPath()));
+                Uri uri = data.getData();
+                Uri docUri = DocumentsContract.buildDocumentUriUsingTree(uri, DocumentsContract.getTreeDocumentId(uri));
+                String path = FileUtil2.getPathFromUri(getContext(), docUri);
+                myEdit.putString("directory", path);
                 myEdit.commit();
                 break;
         }

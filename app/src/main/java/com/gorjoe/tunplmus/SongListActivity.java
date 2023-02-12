@@ -5,13 +5,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.BaseAdapter;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.bluewhaleyt.common.CommonUtil;
 import com.bluewhaleyt.common.PermissionUtil;
@@ -23,14 +26,15 @@ import com.gorjoe.tunplmus.databinding.ActivitySongListBinding;
 import com.gorjoe.tunplmus.models.SongModel;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class SongListActivity extends AppCompatActivity {
 
     private ActivitySongListBinding binding;
     ModernDialog dialog;
 
-    private ArrayList<SongModel> list;
-    private SongListAdapter songlistadapter;
+    private ArrayList<SongModel> list = new ArrayList<>();
+    private SongListAdapter songlistadapter = new SongListAdapter(list);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,27 +71,25 @@ public class SongListActivity extends AppCompatActivity {
                     ArrayList<String> files = new ArrayList<>();
 //                    listDir(dir, files, true);
 
-                    list = new ArrayList<>();
-                    songlistadapter = new SongListAdapter(list);
-
                     LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
                     linearLayoutManager.setStackFromEnd(true);
                     linearLayoutManager.setReverseLayout(true);
-                    binding.lvSongList.setLayoutManager(linearLayoutManager);
-                    binding.lvSongList.setAdapter(songlistadapter);
-
-                    // test
 
                     FileUtil.listOnlyFilesSubDirFiles(dir, files);
                     Log.e("Test", "files: " + files);
 
                     for (String f : files) {
                         File song = new File(f);
-                        MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
-                        mediaMetadataRetriever.setDataSource(this, Uri.parse(f));
+//                        MediaMetadataRetriever media = new MediaMetadataRetriever();
+//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//                            Uri newUri = FileProvider.getUriForFile(this, getPackageName() + ".fileprovider", new File(String.valueOf(Uri.parse(f))));
+//                            media.setDataSource(this, newUri);
+//                        } else {
+//                            media.setDataSource(String.valueOf(Uri.parse(f)), new HashMap<String, String>());
+//                        }
 
-                        String songName = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
-                        String artist = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
+//                        String songName = media.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+//                        String artist = media.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
 
                         list.add(new SongModel());
 //                        list.get(0).setName(songName);
@@ -96,6 +98,8 @@ public class SongListActivity extends AppCompatActivity {
                         list.get(0).setAuthor("artist");
                     }
 
+                    binding.lvSongList.setLayoutManager(linearLayoutManager);
+                    binding.lvSongList.setAdapter(songlistadapter);
                     binding.lvSongList.getAdapter().notifyDataSetChanged();
 
 //                    ((BaseAdapter) binding.lvSongList.getAdapter()).notifyDataSetChanged();
@@ -181,10 +185,6 @@ public class SongListActivity extends AppCompatActivity {
                 })
                 .setNegativeButton(false)
                 .show();
-    }
-
-    private void showDownloadHistory() {
-
     }
 
 }

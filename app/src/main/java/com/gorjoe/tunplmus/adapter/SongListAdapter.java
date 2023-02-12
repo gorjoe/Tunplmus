@@ -56,7 +56,7 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.ViewHo
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            name = itemView.findViewById(R.id.tvName);
+            name = itemView.findViewById(R.id.tvSongName);
             author = itemView.findViewById(R.id.tvAuthor);
             time = itemView.findViewById(R.id.tvTime);
         }

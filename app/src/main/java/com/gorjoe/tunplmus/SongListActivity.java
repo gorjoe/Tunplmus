@@ -27,6 +27,7 @@ import com.gorjoe.tunplmus.models.SongModel;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class SongListActivity extends AppCompatActivity {
 
@@ -78,24 +79,26 @@ public class SongListActivity extends AppCompatActivity {
                     FileUtil.listOnlyFilesSubDirFiles(dir, files);
                     Log.e("Test", "files: " + files);
 
-                    for (String f : files) {
+                    for (int i=0; i < files.size(); i++) {
+                        String f = files.get(i);
                         File song = new File(f);
-//                        MediaMetadataRetriever media = new MediaMetadataRetriever();
-//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        MediaMetadataRetriever media = new MediaMetadataRetriever();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 //                            Uri newUri = FileProvider.getUriForFile(this, getPackageName() + ".fileprovider", new File(String.valueOf(Uri.parse(f))));
-//                            media.setDataSource(this, newUri);
-//                        } else {
-//                            media.setDataSource(String.valueOf(Uri.parse(f)), new HashMap<String, String>());
-//                        }
+                            Uri newUri = FileProvider.getUriForFile(Objects.requireNonNull(getApplicationContext()), BuildConfig.APPLICATION_ID + ".provider", new File(String.valueOf(Uri.parse(f))));
+                            media.setDataSource(this, newUri);
+                        } else {
+                            media.setDataSource(String.valueOf(Uri.parse(f)), new HashMap<String, String>());
+                        }
 
-//                        String songName = media.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
-//                        String artist = media.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
+                        String songName = media.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+                        String artist = media.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
 
                         list.add(new SongModel());
-//                        list.get(0).setName(songName);
-//                        list.get(0).setAuthor(artist);
-                        list.get(0).setName("songName");
-                        list.get(0).setAuthor("artist");
+                        list.get(i).setName(songName);
+                        list.get(i).setAuthor(artist);
+//                        list.get(i).setName("songName");
+//                        list.get(i).setAuthor("artist");
                     }
 
                     binding.lvSongList.setLayoutManager(linearLayoutManager);

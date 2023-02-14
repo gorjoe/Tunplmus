@@ -1,11 +1,11 @@
 package com.gorjoe.tunplmus;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.MediaMetadataRetriever;
+import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -14,7 +14,6 @@ import android.widget.BaseAdapter;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.bluewhaleyt.common.CommonUtil;
 import com.bluewhaleyt.common.PermissionUtil;
@@ -26,8 +25,8 @@ import com.gorjoe.tunplmus.databinding.ActivitySongListBinding;
 import com.gorjoe.tunplmus.models.SongModel;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class SongListActivity extends AppCompatActivity {
 
@@ -37,6 +36,8 @@ public class SongListActivity extends AppCompatActivity {
     private ArrayList<SongModel> list = new ArrayList<>();
     private SongListAdapter songlistadapter = new SongListAdapter(list);
 
+    ArrayList<Song> songList = new ArrayList<Song>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +45,34 @@ public class SongListActivity extends AppCompatActivity {
         binding = ActivitySongListBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         init();
+    }
+
+    public void getSongList() {
+        //clear list before adding
+        songList.clear();
+
+        //retrieve song info
+        ContentResolver musicResolver = getContentResolver();
+        Uri musicUri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        Cursor musicCursor = musicResolver.query(musicUri, null, null, null, null);
+
+        if(musicCursor!=null && musicCursor.moveToFirst()){
+            //get columns
+            int titleColumn = musicCursor.getColumnIndex
+                    (android.provider.MediaStore.Audio.Media.TITLE);
+            int idColumn = musicCursor.getColumnIndex
+                    (android.provider.MediaStore.Audio.Media._ID);
+            int artistColumn = musicCursor.getColumnIndex
+                    (android.provider.MediaStore.Audio.Media.ARTIST);
+            //add songs to list
+            do {
+                long thisId = musicCursor.getLong(idColumn);
+                String thisTitle = musicCursor.getString(titleColumn);
+                String thisArtist = musicCursor.getString(artistColumn);
+                songList.add(new Song(thisId, thisTitle, thisArtist));
+            }
+            while (musicCursor.moveToNext());
+        }
     }
 
     @Override
@@ -79,28 +108,31 @@ public class SongListActivity extends AppCompatActivity {
                     FileUtil.listOnlyFilesSubDirFiles(dir, files);
                     Log.e("Test", "files: " + files);
 
-                    for (int i=0; i < files.size(); i++) {
-                        String f = files.get(i);
-                        File song = new File(f);
-                        MediaMetadataRetriever media = new MediaMetadataRetriever();
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//                            Uri newUri = FileProvider.getUriForFile(this, getPackageName() + ".fileprovider", new File(String.valueOf(Uri.parse(f))));
-                            Uri newUri = FileProvider.getUriForFile(Objects.requireNonNull(getApplicationContext()), BuildConfig.APPLICATION_ID + ".provider", new File(String.valueOf(Uri.parse(f))));
-                            media.setDataSource(this, newUri);
-                        } else {
-                            media.setDataSource(String.valueOf(Uri.parse(f)), new HashMap<String, String>());
+                    getSongList();
+                    Collections.sort(songList, new Comparator<Song>(){
+                        public int compare(Song a, Song b){
+                            return a.getTitle().compareTo(b.getTitle());
                         }
+                    });
 
-                        String songName = media.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
-                        String artist = media.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
+//                    for (int i = 0; i < files.size(); i++) {
+////                        String f = files.get(i);
+////                        File song = new File(f);
+//
+//                        list.add(new SongModel());
+//                        list.get(i).setName(songName);
+//                        list.get(i).setAuthor(artist);
+////                        list.get(i).setName("songName");
+////                        list.get(i).setAuthor("artist");
+//                    }
 
+                    for (int i = 0; i < songList.size(); i++) {
+                        Song currSong = songList.get(i);
                         list.add(new SongModel());
-                        list.get(i).setName(songName);
-                        list.get(i).setAuthor(artist);
-//                        list.get(i).setName("songName");
-//                        list.get(i).setAuthor("artist");
+                        list.get(i).setName(currSong.getTitle());
+                        list.get(i).setAuthor(currSong.getArtist());
                     }
-
+//
                     binding.lvSongList.setLayoutManager(linearLayoutManager);
                     binding.lvSongList.setAdapter(songlistadapter);
                     binding.lvSongList.getAdapter().notifyDataSetChanged();

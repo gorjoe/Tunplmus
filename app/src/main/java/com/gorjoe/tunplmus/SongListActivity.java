@@ -2,6 +2,7 @@ package com.gorjoe.tunplmus;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -51,10 +52,50 @@ public class SongListActivity extends AppCompatActivity {
         return songList;
     }
 
-    public static Uri StringtoUri(String path) {
-        File file = new File(path);
-        Uri uri = Uri.fromFile(file);
-        return uri;
+    public static void getSongbyUri(Uri uri) {
+        //clear list before adding
+        songList.clear();
+
+        //retrieve song info
+        ContentResolver musicResolver = getContentResolver();
+//        Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        Cursor musicCursor = musicResolver.query(uri, null, null, null, null);
+
+        if (musicCursor!= null) {
+            if (musicCursor.moveToFirst()) {
+                int idColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID);
+                int titleColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media.TITLE);
+                int artistColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media.ARTIST);
+                int durationColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media.DURATION);
+
+                do {
+                    long id = musicCursor.getLong(idColumn);
+                    String title = musicCursor.getString(titleColumn);
+                    String artist = musicCursor.getString(artistColumn);
+                    long duration = musicCursor.getLong(durationColumn);
+                    songList.add(new Song(id, title, artist, duration));
+                } while (musicCursor.moveToNext());
+            }
+            musicCursor.close();
+        }
+    }
+
+    public static ArrayList<String> OnlyAudioFileList(ArrayList<String> files) {
+        ArrayList<String> newList = new ArrayList<>();
+
+        for (String file : files) {
+//            if (file.endsWith(".mp3")) {
+//                newList.add(file);
+//            }
+            String mimeType = SongFileUtil.getMimeType(file);
+//            Log.e("Test", "msg: " + file + " , " + mimeType);
+            if (mimeType != null && mimeType.startsWith("audio")) {
+                newList.add(file);
+                getSongbyUri(SongFileUtil.StringtoUri(file));
+            }
+        }
+
+        return newList;
     }
 
     public void getSongList() {
@@ -64,19 +105,20 @@ public class SongListActivity extends AppCompatActivity {
         //retrieve song info
         ContentResolver musicResolver = getContentResolver();
         Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        String[] projection = {MediaStore.Audio.Media._ID,
-                MediaStore.Audio.Media.TITLE,
-                MediaStore.Audio.Media.ARTIST,
-                MediaStore.Audio.Media.DURATION};
-        Cursor musicCursor = musicResolver.query(musicUri, projection, null, null, null);
+        Cursor musicCursor = musicResolver.query(musicUri, null, null, null, null);
 
         if (musicCursor!= null) {
             if (musicCursor.moveToFirst()) {
+                int idColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID);
+                int titleColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media.TITLE);
+                int artistColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media.ARTIST);
+                int durationColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media.DURATION);
+
                 do {
-                    long id = musicCursor.getLong(0);
-                    String title = musicCursor.getString(1);
-                    String artist = musicCursor.getString(2);
-                    long duration = musicCursor.getLong(3);
+                    long id = musicCursor.getLong(idColumn);
+                    String title = musicCursor.getString(titleColumn);
+                    String artist = musicCursor.getString(artistColumn);
+                    long duration = musicCursor.getLong(durationColumn);
                     songList.add(new Song(id, title, artist, duration));
                 } while (musicCursor.moveToNext());
             }
@@ -113,12 +155,13 @@ public class SongListActivity extends AppCompatActivity {
                     linearLayoutManager.setStackFromEnd(true);
                     linearLayoutManager.setReverseLayout(true);
 
-//                    FileUtil.listOnlyFilesSubDirFiles(dir, files);
-//                    Log.e("Test", "files: " + files);
+                    FileUtil.listOnlyFilesSubDirFiles(dir, files);
+                    ArrayList<String> newfiles = OnlyAudioFileList(files);
+                    Log.e("Test", "files: " + newfiles);
 
-//                    getSongList();
-                    Uri realdir = StringtoUri(dir);
-                    Log.e("Test", "realdir: " + realdir);
+                    getSongList();
+//                    Uri realdir = StringtoUri(dir);
+//                    Log.e("Test", "realdir: " + realdir);
                     Collections.sort(songList, new Comparator<Song>(){
                         public int compare(Song a, Song b){
                             return a.getTitle().compareTo(b.getTitle());

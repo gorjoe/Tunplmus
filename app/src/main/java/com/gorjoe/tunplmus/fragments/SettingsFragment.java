@@ -60,8 +60,8 @@ public class SettingsFragment extends PreferenceFragment {
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
                 Uri uri = data.getData();
                 Uri docUri = DocumentsContract.buildDocumentUriUsingTree(uri, DocumentsContract.getTreeDocumentId(uri));
-//                String path = FileUtil2.getPathFromUri(getContext(), docUri);
-                String path = FileUtil.getFilePathByUri(docUri);
+                String path = FileUtil2.getPathFromUri(getContext(), docUri);
+//                String path = FileUtil.getFilePathByUri(docUri);
                 myEdit.putString("directory", path);
                 myEdit.commit();
                 break;

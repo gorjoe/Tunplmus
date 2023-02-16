@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bluewhaleyt.component.snackbar.SnackbarUtil;
 import com.gorjoe.tunplmus.R;
+import com.gorjoe.tunplmus.Song;
+import com.gorjoe.tunplmus.SongListActivity;
 import com.gorjoe.tunplmus.models.SongModel;
 
 import java.util.ArrayList;
@@ -35,11 +37,12 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         SongModel model = list.get(position);
+        String songName = SongListActivity.SongListArray().get(position).getTitle();
         holder.name.setText(model.getName());
         holder.author.setText(model.getAuthor());
 
         holder.itemView.setOnClickListener(v -> {
-            SnackbarUtil.makeSnackbar((Activity) holder.itemView.getContext(), "item" + position + " clicked");
+            SnackbarUtil.makeSnackbar((Activity) holder.itemView.getContext(), "item" + position + " clicked, " + songName);
         });
 
     }

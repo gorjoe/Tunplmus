@@ -1,13 +1,19 @@
 package com.gorjoe.tunplmus;
 
 import android.content.ContentResolver;
-import android.content.ContextWrapper;
+import android.content.ContentUris;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.os.storage.StorageManager;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 import java.io.File;
-import java.util.ArrayList;
 
 public class SongFileUtil {
     public static String getMimeType(String url) {

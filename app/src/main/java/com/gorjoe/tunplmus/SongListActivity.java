@@ -2,7 +2,6 @@ package com.gorjoe.tunplmus;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -38,6 +37,9 @@ public class SongListActivity extends AppCompatActivity {
     private SongListAdapter songlistadapter = new SongListAdapter(list);
 
     public static ArrayList<Song> songList = new ArrayList<Song>();
+    ArrayList<String> newfiles = new ArrayList<>();
+    ArrayList<String> tempNames = new ArrayList<>();
+    ArrayList<Song> OnlySongList = new ArrayList<Song>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,12 +54,12 @@ public class SongListActivity extends AppCompatActivity {
         return songList;
     }
 
-    public static void getSongbyUri(Uri uri) {
+    public static void getSongbyUri(Context context,Uri uri) {
         //clear list before adding
         songList.clear();
 
         //retrieve song info
-        ContentResolver musicResolver = getContentResolver();
+        ContentResolver musicResolver = context.getContentResolver();
 //        Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         Cursor musicCursor = musicResolver.query(uri, null, null, null, null);
 
@@ -80,7 +82,7 @@ public class SongListActivity extends AppCompatActivity {
         }
     }
 
-    public static ArrayList<String> OnlyAudioFileList(ArrayList<String> files) {
+    public ArrayList<String> OnlyAudioFileList(ArrayList<String> files) {
         ArrayList<String> newList = new ArrayList<>();
 
         for (String file : files) {
@@ -88,10 +90,11 @@ public class SongListActivity extends AppCompatActivity {
 //                newList.add(file);
 //            }
             String mimeType = SongFileUtil.getMimeType(file);
-//            Log.e("Test", "msg: " + file + " , " + mimeType);
+            Log.e("Test", "msg: " + file + " , " + mimeType);
             if (mimeType != null && mimeType.startsWith("audio")) {
                 newList.add(file);
-                getSongbyUri(SongFileUtil.StringtoUri(file));
+//                getSongbyUri(this, SongFileUtil.StringtoUri(file));
+//                Log.e("Test", "calling song: " + SongFileUtil.StringtoUri(file));
             }
         }
 
@@ -119,10 +122,21 @@ public class SongListActivity extends AppCompatActivity {
                     String title = musicCursor.getString(titleColumn);
                     String artist = musicCursor.getString(artistColumn);
                     long duration = musicCursor.getLong(durationColumn);
-                    songList.add(new Song(id, title, artist, duration));
+
+                    if (tempNames.contains(title)) {
+                        songList.add(new Song(id, title, artist, duration));
+                    }
                 } while (musicCursor.moveToNext());
             }
             musicCursor.close();
+        }
+    }
+
+    public void OnlyNameInList() {
+        tempNames.clear();
+        for (String song : newfiles) {
+            String songname = song.substring(song.lastIndexOf("/")+1, song.length()-4);
+            tempNames.add(songname);
         }
     }
 
@@ -145,6 +159,9 @@ public class SongListActivity extends AppCompatActivity {
 //                String dir = sh.getString("directory", FileUtil.getExternalStoragePath());
                 String dir = sh.getString("directory", "unknown");
                 Toast.makeText(this, "dir: " + dir, Toast.LENGTH_LONG).show();
+
+                Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                Log.e("Test", "mdir: " + musicUri);
                 Log.e("Test", "dir: " + dir);
 
                 if (!dir.equals("unknown")) {
@@ -156,12 +173,13 @@ public class SongListActivity extends AppCompatActivity {
                     linearLayoutManager.setReverseLayout(true);
 
                     FileUtil.listOnlyFilesSubDirFiles(dir, files);
-                    ArrayList<String> newfiles = OnlyAudioFileList(files);
+                    newfiles = OnlyAudioFileList(files);
                     Log.e("Test", "files: " + newfiles);
 
+                    OnlyNameInList();
+                    Log.e("Test", "tfile: " + tempNames);
+
                     getSongList();
-//                    Uri realdir = StringtoUri(dir);
-//                    Log.e("Test", "realdir: " + realdir);
                     Collections.sort(songList, new Comparator<Song>(){
                         public int compare(Song a, Song b){
                             return a.getTitle().compareTo(b.getTitle());

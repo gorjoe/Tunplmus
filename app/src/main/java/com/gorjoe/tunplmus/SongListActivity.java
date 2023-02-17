@@ -36,10 +36,11 @@ public class SongListActivity extends AppCompatActivity {
     private ArrayList<SongModel> list = new ArrayList<>();
     private SongListAdapter songlistadapter = new SongListAdapter(list);
 
-    public static ArrayList<Song> songList = new ArrayList<Song>();
-    ArrayList<String> newfiles = new ArrayList<>();
-    ArrayList<String> tempNames = new ArrayList<>();
+//    public static ArrayList<Song> songList = new ArrayList<Song>();
+//    ArrayList<String> newfiles = new ArrayList<>();
+//    ArrayList<String> tempNames = new ArrayList<>();
     ArrayList<Song> OnlySongList = new ArrayList<Song>();
+    static ArrayList<Song> audioFiles = new ArrayList<Song>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,93 +51,134 @@ public class SongListActivity extends AppCompatActivity {
         init();
     }
 
-    public static ArrayList<Song> SongListArray() {
-        return songList;
+//    public static ArrayList<Song> SongListArray() {
+//        return songList;
+//    }
+
+    public static ArrayList<Song> getAudioFilesArray() {
+        return audioFiles;
     }
 
-    public static void getSongbyUri(Context context,Uri uri) {
-        //clear list before adding
-        songList.clear();
-
-        //retrieve song info
-        ContentResolver musicResolver = context.getContentResolver();
-//        Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        Cursor musicCursor = musicResolver.query(uri, null, null, null, null);
-
-        if (musicCursor!= null) {
-            if (musicCursor.moveToFirst()) {
-                int idColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID);
-                int titleColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media.TITLE);
-                int artistColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media.ARTIST);
-                int durationColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media.DURATION);
-
-                do {
-                    long id = musicCursor.getLong(idColumn);
-                    String title = musicCursor.getString(titleColumn);
-                    String artist = musicCursor.getString(artistColumn);
-                    long duration = musicCursor.getLong(durationColumn);
-                    songList.add(new Song(id, title, artist, duration));
-                } while (musicCursor.moveToNext());
-            }
-            musicCursor.close();
-        }
-    }
-
-    public ArrayList<String> OnlyAudioFileList(ArrayList<String> files) {
-        ArrayList<String> newList = new ArrayList<>();
-
-        for (String file : files) {
-//            if (file.endsWith(".mp3")) {
-//                newList.add(file);
+//    public static void getSongbyUri(Context context,Uri uri) {
+//        //clear list before adding
+//        songList.clear();
+//
+//        //retrieve song info
+//        ContentResolver musicResolver = context.getContentResolver();
+////        Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+//        Cursor musicCursor = musicResolver.query(uri, null, null, null, null);
+//
+//        if (musicCursor!= null) {
+//            if (musicCursor.moveToFirst()) {
+//                int idColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID);
+//                int titleColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media.TITLE);
+//                int artistColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media.ARTIST);
+//                int durationColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media.DURATION);
+//
+//                do {
+//                    long id = musicCursor.getLong(idColumn);
+//                    String title = musicCursor.getString(titleColumn);
+//                    String artist = musicCursor.getString(artistColumn);
+//                    long duration = musicCursor.getLong(durationColumn);
+////                    songList.add(new Song(id, title, artist, duration));
+//                } while (musicCursor.moveToNext());
 //            }
-            String mimeType = SongFileUtil.getMimeType(file);
-            Log.e("Test", "msg: " + file + " , " + mimeType);
-            if (mimeType != null && mimeType.startsWith("audio")) {
-                newList.add(file);
-//                getSongbyUri(this, SongFileUtil.StringtoUri(file));
-//                Log.e("Test", "calling song: " + SongFileUtil.StringtoUri(file));
-            }
+//            musicCursor.close();
+//        }
+//    }
+
+//    public ArrayList<String> OnlyAudioFileList(ArrayList<String> files) {
+//        ArrayList<String> newList = new ArrayList<>();
+//
+//        for (String file : files) {
+////            if (file.endsWith(".mp3")) {
+////                newList.add(file);
+////            }
+//            String mimeType = SongFileUtil.getMimeType(file);
+//            Log.e("Test", "msg: " + file + " , " + mimeType);
+//            if (mimeType != null && mimeType.startsWith("audio")) {
+//                newList.add(file);
+////                getSongbyUri(this, SongFileUtil.StringtoUri(file));
+////                Log.e("Test", "calling song: " + SongFileUtil.StringtoUri(file));
+//            }
+//        }
+//
+//        return newList;
+//    }
+
+//    public void getSongList() {
+//        //clear list before adding
+//        songList.clear();
+//
+//        //retrieve song info
+//        ContentResolver musicResolver = getContentResolver();
+//        Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+//        Cursor musicCursor = musicResolver.query(musicUri, null, null, null, null);
+//
+//        if (musicCursor!= null) {
+//            if (musicCursor.moveToFirst()) {
+//                int idColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID);
+//                int titleColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media.TITLE);
+//                int artistColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media.ARTIST);
+//                int durationColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media.DURATION);
+//
+//                do {
+//                    long id = musicCursor.getLong(idColumn);
+//                    String title = musicCursor.getString(titleColumn);
+//                    String artist = musicCursor.getString(artistColumn);
+//                    long duration = musicCursor.getLong(durationColumn);
+//
+//                    if (tempNames.contains(title)) {
+////                        songList.add(new Song(id, title, artist, duration));
+//                    }
+//                } while (musicCursor.moveToNext());
+//            }
+//            musicCursor.close();
+//        }
+//    }
+
+//    public void OnlyNameInList() {
+//        tempNames.clear();
+//        for (String song : newfiles) {
+//            String songname = song.substring(song.lastIndexOf("/")+1, song.length()-4);
+//            tempNames.add(songname);
+//        }
+//    }
+
+    public void OnlyDirectorySongList(String uriString){
+        Uri selectedDirUri = Uri.parse(uriString);
+
+        // Query the media content provider for audio files in the selected directory
+        String[] projection = {MediaStore.Audio.Media.DATA,
+                MediaStore.Audio.Media.TITLE,
+                MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media.ALBUM,
+                MediaStore.Audio.Media.DURATION};
+        String selection = MediaStore.Audio.Media.DATA + " like ?";
+        String[] selectionArgs = {selectedDirUri.getPath() + "/%"};
+        Cursor cursor = getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection, selectionArgs,null);
+
+        // Add the audio files to the ArrayList
+        if (cursor != null && cursor.moveToFirst()) {
+            int fileCol = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
+            int titleCol = cursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
+            int artistCol = cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
+            int albumCol = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM);
+            int durationCol = cursor.getColumnIndex(MediaStore.Audio.Media.DURATION);
+            do {
+                String filePath = cursor.getString(fileCol);
+                String title = cursor.getString(titleCol);
+                String artist = cursor.getString(artistCol);
+                String album = cursor.getString(albumCol);
+                long duration = cursor.getLong(durationCol);
+                Song audioFile = new Song(filePath, title, artist, album, duration);
+                audioFiles.add(audioFile);
+            } while (cursor.moveToNext());
         }
 
-        return newList;
-    }
-
-    public void getSongList() {
-        //clear list before adding
-        songList.clear();
-
-        //retrieve song info
-        ContentResolver musicResolver = getContentResolver();
-        Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        Cursor musicCursor = musicResolver.query(musicUri, null, null, null, null);
-
-        if (musicCursor!= null) {
-            if (musicCursor.moveToFirst()) {
-                int idColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID);
-                int titleColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media.TITLE);
-                int artistColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media.ARTIST);
-                int durationColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media.DURATION);
-
-                do {
-                    long id = musicCursor.getLong(idColumn);
-                    String title = musicCursor.getString(titleColumn);
-                    String artist = musicCursor.getString(artistColumn);
-                    long duration = musicCursor.getLong(durationColumn);
-
-                    if (tempNames.contains(title)) {
-                        songList.add(new Song(id, title, artist, duration));
-                    }
-                } while (musicCursor.moveToNext());
-            }
-            musicCursor.close();
-        }
-    }
-
-    public void OnlyNameInList() {
-        tempNames.clear();
-        for (String song : newfiles) {
-            String songname = song.substring(song.lastIndexOf("/")+1, song.length()-4);
-            tempNames.add(songname);
+        // Close the cursor
+        if (cursor != null) {
+            cursor.close();
         }
     }
 
@@ -172,15 +214,16 @@ public class SongListActivity extends AppCompatActivity {
                     linearLayoutManager.setStackFromEnd(true);
                     linearLayoutManager.setReverseLayout(true);
 
-                    FileUtil.listOnlyFilesSubDirFiles(dir, files);
-                    newfiles = OnlyAudioFileList(files);
-                    Log.e("Test", "files: " + newfiles);
+//                    FileUtil.listOnlyFilesSubDirFiles(dir, files);
+//                    newfiles = OnlyAudioFileList(files);
+//                    Log.e("Test", "files: " + newfiles);
 
-                    OnlyNameInList();
-                    Log.e("Test", "tfile: " + tempNames);
+//                    OnlyNameInList();
+//                    Log.e("Test", "tfile: " + tempNames);
 
-                    getSongList();
-                    Collections.sort(songList, new Comparator<Song>(){
+//                    getSongList();
+                    OnlyDirectorySongList(dir);
+                    Collections.sort(audioFiles, new Comparator<Song>(){
                         public int compare(Song a, Song b){
                             return a.getTitle().compareTo(b.getTitle());
                         }
@@ -197,8 +240,8 @@ public class SongListActivity extends AppCompatActivity {
 ////                        list.get(i).setAuthor("artist");
 //                    }
 
-                    for (int i = 0; i < songList.size(); i++) {
-                        Song currSong = songList.get(i);
+                    for (int i = 0; i < audioFiles.size(); i++) {
+                        Song currSong = audioFiles.get(i);
                         list.add(new SongModel());
                         list.get(i).setName(currSong.getTitle());
                         list.get(i).setAuthor(currSong.getArtist());

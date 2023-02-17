@@ -1,23 +1,23 @@
 package com.gorjoe.tunplmus;
 
-import android.net.Uri;
-
 public class Song {
 
-    private long id;
+    private String path;
     private String title;
     private String artist;
+    private String album;
     private long duration;
 
-    public Song(long songID, String songTitle, String songArtist, long songDuration) {
-        id=songID;
+    public Song(String songFilePath, String songTitle, String songArtist, String songAlbum, long songDuration) {
+        path = songFilePath;
         title=songTitle;
         artist=songArtist;
+        album=songAlbum;
         duration=songDuration;
     }
 
-    public long getID(){
-        return id;
+    public String getPath(){
+        return path;
     }
 
     public String getTitle(){
@@ -26,6 +26,10 @@ public class Song {
 
     public String getArtist(){
         return artist;
+    }
+
+    public String getAlbum() {
+        return album;
     }
 
     public long getDuration(){

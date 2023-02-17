@@ -1,32 +1,18 @@
 package com.gorjoe.tunplmus.fragments;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
 import android.provider.DocumentsContract;
-import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 import androidx.annotation.Nullable;
-import androidx.documentfile.provider.DocumentFile;
-
-import com.bluewhaleyt.filemanagement.FileUtil;
 import com.gorjoe.tunplmus.FileUtil2;
 import com.gorjoe.tunplmus.R;
-
-import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import static android.content.Context.MODE_PRIVATE;
 
 public class SettingsFragment extends PreferenceFragment {
@@ -41,7 +27,10 @@ public class SettingsFragment extends PreferenceFragment {
             //code for what you want it to do
 //            Toast.makeText(getActivity(), "you clicked me", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+            intent.putExtra("android.content.extra.SHOW_ADVANCED", true);
             intent.addCategory(Intent.CATEGORY_DEFAULT);
+//            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+//            intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Uri.parse("content://com.android.externalstorage.music/tree/primary%3A"));
             startActivityForResult(intent, 9999);
             return true;
         });
@@ -64,6 +53,20 @@ public class SettingsFragment extends PreferenceFragment {
 //                String path = FileUtil.getFilePathByUri(docUri);
                 myEdit.putString("directory", path);
                 myEdit.commit();
+                //=======================
+//                Uri treeUri = data.getData();
+//                getContext().getContentResolver().takePersistableUriPermission(treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+//                SharedPreferences preferences = getActivity().getSharedPreferences("directory", MODE_PRIVATE);
+//
+//                // Get a DocumentFile object representing the selected file
+//                // Get a DocumentFile object representing the selected file
+//                DocumentFile documentFile = DocumentFile.fromSingleUri(getContext(), treeUri);
+//
+//                // Get the absolute file path of the selected file
+//                String filePath = documentFile.getUri().toString();
+//
+//
+//                preferences.edit().putString("directory", filePath).apply();
                 break;
         }
     }

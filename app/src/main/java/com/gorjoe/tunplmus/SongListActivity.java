@@ -1,6 +1,5 @@
 package com.gorjoe.tunplmus;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,7 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.bluewhaleyt.common.CommonUtil;
 import com.bluewhaleyt.common.PermissionUtil;
 import com.bluewhaleyt.crashdebugger.CrashDebugger;
-import com.bluewhaleyt.filemanagement.FileUtil;
 import com.bluewhaleyt.moderndialog.ModernDialog;
 import com.gorjoe.tunplmus.adapter.SongListAdapter;
 import com.gorjoe.tunplmus.databinding.ActivitySongListBinding;
@@ -36,10 +34,6 @@ public class SongListActivity extends AppCompatActivity {
     private ArrayList<SongModel> list = new ArrayList<>();
     private SongListAdapter songlistadapter = new SongListAdapter(list);
 
-//    public static ArrayList<Song> songList = new ArrayList<Song>();
-//    ArrayList<String> newfiles = new ArrayList<>();
-//    ArrayList<String> tempNames = new ArrayList<>();
-    ArrayList<Song> OnlySongList = new ArrayList<Song>();
     static ArrayList<Song> audioFiles = new ArrayList<Song>();
 
     @Override
@@ -51,99 +45,9 @@ public class SongListActivity extends AppCompatActivity {
         init();
     }
 
-//    public static ArrayList<Song> SongListArray() {
-//        return songList;
-//    }
-
     public static ArrayList<Song> getAudioFilesArray() {
         return audioFiles;
     }
-
-//    public static void getSongbyUri(Context context,Uri uri) {
-//        //clear list before adding
-//        songList.clear();
-//
-//        //retrieve song info
-//        ContentResolver musicResolver = context.getContentResolver();
-////        Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-//        Cursor musicCursor = musicResolver.query(uri, null, null, null, null);
-//
-//        if (musicCursor!= null) {
-//            if (musicCursor.moveToFirst()) {
-//                int idColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID);
-//                int titleColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media.TITLE);
-//                int artistColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media.ARTIST);
-//                int durationColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media.DURATION);
-//
-//                do {
-//                    long id = musicCursor.getLong(idColumn);
-//                    String title = musicCursor.getString(titleColumn);
-//                    String artist = musicCursor.getString(artistColumn);
-//                    long duration = musicCursor.getLong(durationColumn);
-////                    songList.add(new Song(id, title, artist, duration));
-//                } while (musicCursor.moveToNext());
-//            }
-//            musicCursor.close();
-//        }
-//    }
-
-//    public ArrayList<String> OnlyAudioFileList(ArrayList<String> files) {
-//        ArrayList<String> newList = new ArrayList<>();
-//
-//        for (String file : files) {
-////            if (file.endsWith(".mp3")) {
-////                newList.add(file);
-////            }
-//            String mimeType = SongFileUtil.getMimeType(file);
-//            Log.e("Test", "msg: " + file + " , " + mimeType);
-//            if (mimeType != null && mimeType.startsWith("audio")) {
-//                newList.add(file);
-////                getSongbyUri(this, SongFileUtil.StringtoUri(file));
-////                Log.e("Test", "calling song: " + SongFileUtil.StringtoUri(file));
-//            }
-//        }
-//
-//        return newList;
-//    }
-
-//    public void getSongList() {
-//        //clear list before adding
-//        songList.clear();
-//
-//        //retrieve song info
-//        ContentResolver musicResolver = getContentResolver();
-//        Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-//        Cursor musicCursor = musicResolver.query(musicUri, null, null, null, null);
-//
-//        if (musicCursor!= null) {
-//            if (musicCursor.moveToFirst()) {
-//                int idColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID);
-//                int titleColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media.TITLE);
-//                int artistColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media.ARTIST);
-//                int durationColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media.DURATION);
-//
-//                do {
-//                    long id = musicCursor.getLong(idColumn);
-//                    String title = musicCursor.getString(titleColumn);
-//                    String artist = musicCursor.getString(artistColumn);
-//                    long duration = musicCursor.getLong(durationColumn);
-//
-//                    if (tempNames.contains(title)) {
-////                        songList.add(new Song(id, title, artist, duration));
-//                    }
-//                } while (musicCursor.moveToNext());
-//            }
-//            musicCursor.close();
-//        }
-//    }
-
-//    public void OnlyNameInList() {
-//        tempNames.clear();
-//        for (String song : newfiles) {
-//            String songname = song.substring(song.lastIndexOf("/")+1, song.length()-4);
-//            tempNames.add(songname);
-//        }
-//    }
 
     public void OnlyDirectorySongList(String uriString){
         Uri selectedDirUri = Uri.parse(uriString);
@@ -214,31 +118,12 @@ public class SongListActivity extends AppCompatActivity {
                     linearLayoutManager.setStackFromEnd(true);
                     linearLayoutManager.setReverseLayout(true);
 
-//                    FileUtil.listOnlyFilesSubDirFiles(dir, files);
-//                    newfiles = OnlyAudioFileList(files);
-//                    Log.e("Test", "files: " + newfiles);
-
-//                    OnlyNameInList();
-//                    Log.e("Test", "tfile: " + tempNames);
-
-//                    getSongList();
                     OnlyDirectorySongList(dir);
                     Collections.sort(audioFiles, new Comparator<Song>(){
                         public int compare(Song a, Song b){
                             return a.getTitle().compareTo(b.getTitle());
                         }
                     });
-
-//                    for (int i = 0; i < files.size(); i++) {
-////                        String f = files.get(i);
-////                        File song = new File(f);
-//
-//                        list.add(new SongModel());
-//                        list.get(i).setName(songName);
-//                        list.get(i).setAuthor(artist);
-////                        list.get(i).setName("songName");
-////                        list.get(i).setAuthor("artist");
-//                    }
 
                     for (int i = 0; i < audioFiles.size(); i++) {
                         Song currSong = audioFiles.get(i);
@@ -251,30 +136,8 @@ public class SongListActivity extends AppCompatActivity {
                     binding.lvSongList.setAdapter(songlistadapter);
                     binding.lvSongList.getAdapter().notifyDataSetChanged();
 
-//                    ((BaseAdapter) binding.lvSongList.getAdapter()).notifyDataSetChanged();
-
                 } else {
                     Toast.makeText(this, "Song Directory Not Selected", Toast.LENGTH_SHORT).show();
-                }
-            }
-        }
-    }
-
-    public static void listDir(String path, ArrayList < String > list, boolean includeHiddenFiles) {
-        File dir = new File(path);
-        if (!dir.exists() || dir.isFile()) return;
-
-        File[] listFiles = dir.listFiles();
-        if (listFiles == null || listFiles.length <= 0) return;
-
-        if (list == null) return;
-        list.clear();
-        for (File file: listFiles) {
-            if (includeHiddenFiles) {
-                list.add(file.getAbsolutePath());
-            } else {
-                if (!file.getName().startsWith(".")) {
-                    list.add(file.getAbsolutePath());
                 }
             }
         }
@@ -314,12 +177,6 @@ public class SongListActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void download() {
-        // SnackbarUtil.makeSnackbar(this, "button clicked");
-        startActivity(new Intent(this, MediaPlayerActivity.class));
-
     }
 
     private void showDialog() {

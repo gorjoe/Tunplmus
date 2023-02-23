@@ -1,16 +1,17 @@
 package com.gorjoe.tunplmus.adapter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bluewhaleyt.component.snackbar.SnackbarUtil;
+import com.gorjoe.tunplmus.MediaPlayerActivity;
 import com.gorjoe.tunplmus.R;
 import com.gorjoe.tunplmus.Song;
 import com.gorjoe.tunplmus.SongHandler;
@@ -18,6 +19,8 @@ import com.gorjoe.tunplmus.SongListActivity;
 import com.gorjoe.tunplmus.models.SongModel;
 
 import java.util.ArrayList;
+
+import static androidx.core.content.ContextCompat.startActivity;
 
 public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.ViewHolder> {
 
@@ -44,6 +47,7 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.ViewHo
 
         holder.itemView.setOnClickListener(v -> {
             SnackbarUtil.makeSnackbar((Activity) holder.itemView.getContext(), "item" + position + " clicked, " + songName);
+            SongListActivity.goinplaySong();
             SongHandler.PlaySong(position);
         });
 

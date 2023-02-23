@@ -11,11 +11,18 @@ public class SongHandler {
     // Create a new MediaPlayer object
     static MediaPlayer mediaPlayer = new MediaPlayer();
 
+    static Song nowPlaying = null;
+
+    public static void updateNowPlayingSongInfo() {
+    }
+
     public static void PlaySong(int selectedIndex) {
         // Get the File object for the selected audio file
         Song selectedAudioFile = SongListActivity.getAudioFilesArray().get(selectedIndex);
         String filePath = selectedAudioFile.getPath();
         File selectedFile = new File(filePath);
+
+        nowPlaying = selectedAudioFile;
 
         try {
             // Set the selected audio file as the data source for the MediaPlayer

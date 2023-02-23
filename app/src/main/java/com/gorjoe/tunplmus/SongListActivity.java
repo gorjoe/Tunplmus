@@ -21,7 +21,7 @@ import com.bluewhaleyt.moderndialog.ModernDialog;
 import com.gorjoe.tunplmus.adapter.SongListAdapter;
 import com.gorjoe.tunplmus.databinding.ActivitySongListBinding;
 import com.gorjoe.tunplmus.models.SongModel;
-import java.io.File;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -51,6 +51,9 @@ public class SongListActivity extends AppCompatActivity {
 
     public void OnlyDirectorySongList(String uriString){
         Uri selectedDirUri = Uri.parse(uriString);
+        Uri externalUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+
+        Log.e("Test", "Getting from " + externalUri);
 
         // Query the media content provider for audio files in the selected directory
         String[] projection = {MediaStore.Audio.Media.DATA,
@@ -60,7 +63,52 @@ public class SongListActivity extends AppCompatActivity {
                 MediaStore.Audio.Media.DURATION};
         String selection = MediaStore.Audio.Media.DATA + " like ?";
         String[] selectionArgs = {selectedDirUri.getPath() + "/%"};
-        Cursor cursor = getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection, selectionArgs,null);
+
+        for (String ss : selectionArgs) {
+            Log.e("Test", "filter: " + ss);
+        }
+
+        Cursor cursor = getContentResolver().query(externalUri, projection, selection, selectionArgs,null);
+
+        // Add the audio files to the ArrayList
+        if (cursor != null && cursor.moveToFirst()) {
+            int fileCol = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
+            int titleCol = cursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
+            int artistCol = cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
+            int albumCol = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM);
+            int durationCol = cursor.getColumnIndex(MediaStore.Audio.Media.DURATION);
+            do {
+                String filePath = cursor.getString(fileCol);
+                String title = cursor.getString(titleCol);
+                String artist = cursor.getString(artistCol);
+                String album = cursor.getString(albumCol);
+                long duration = cursor.getLong(durationCol);
+                Song audioFile = new Song(filePath, title, artist, album, duration);
+                audioFiles.add(audioFile);
+            } while (cursor.moveToNext());
+        }
+
+        // Close the cursor
+        if (cursor != null) {
+            cursor.close();
+        }
+    }
+
+    public void OnlyDirectorySongListSDcard(String uriString){
+        Uri selectedDirUri = Uri.parse(uriString);
+        Uri externalUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+
+        Log.e("Test", "Getting from " + externalUri);
+
+        // Query the media content provider for audio files in the selected directory
+        String[] projection = {MediaStore.Audio.Media.DATA,
+                MediaStore.Audio.Media.TITLE,
+                MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media.ALBUM,
+                MediaStore.Audio.Media.DURATION};
+        String selection = MediaStore.Audio.Media.DATA + " like ?";
+        String[] selectionArgs = {selectedDirUri.getPath() + "/%"};
+        Cursor cursor = getContentResolver().query(externalUri, projection, selection, selectionArgs,null);
 
         // Add the audio files to the ArrayList
         if (cursor != null && cursor.moveToFirst()) {
@@ -151,10 +199,19 @@ public class SongListActivity extends AppCompatActivity {
         binding.tvSongName.setSingleLine();
         binding.layoutCurrentSong.setOnClickListener(v -> {
 //            startActivity(new Intent(this, MediaPlayerActivity.class));
-            Intent intent = new Intent(this, MediaPlayerActivity.class);
-            startActivity(intent);
-            overridePendingTransition( R.anim.slide_in_up, 0 );
+            goinplaySong();
         });
+    }
+
+    public void goin() {
+        Intent intent = new Intent(this, MediaPlayerActivity.class);
+        startActivity(intent);
+        overridePendingTransition( R.anim.slide_in_up, 0 );
+    }
+
+    public static void goinplaySong() {
+        SongListActivity p = new SongListActivity();
+        p.goin();
     }
 
     @Override

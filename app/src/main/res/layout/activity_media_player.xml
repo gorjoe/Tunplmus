@@ -13,13 +13,6 @@
         android:layout_height="0dp"
         android:layout_weight="1"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="time"
-        android:gravity="end"
-        android:paddingEnd="20dp"/>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,10 +20,23 @@
         android:paddingStart="20dp"
         android:paddingEnd="20dp">
 
-        <ProgressBar
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/timeNow"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal" />
+            android:text="00:00" />
+
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/timeEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="99:99" />
 
     </LinearLayout>
 
@@ -41,30 +47,49 @@
         android:gravity="center">
 
         <Button
-            android:id="@+id/btnPause"
-            android:layout_width="wrap_content"
+            android:id="@+id/btnLoop"
+            android:paddingStart="8dp"
+            android:layout_width="40dp"
+            android:gravity="left"
+            android:layout_weight="1"
+            android:background="@drawable/md_transparent"
             android:layout_height="wrap_content"
-            android:text="Pause"
-            android:drawableTint="?colorOnPrimary"
-            android:drawableLeft="@drawable/ic_baseline_pause_24"
-            android:layout_marginEnd="10dp"/>
+            android:drawableLeft="@drawable/ic_baseline_loop_24"/>
 
         <Button
-            android:id="@+id/btnPlay"
-            android:layout_width="wrap_content"
+            android:id="@+id/btnPre"
+            android:paddingStart="8dp"
+            android:layout_width="40dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/md_transparent"
             android:layout_height="wrap_content"
-            android:text="Play"
+            android:drawableLeft="@drawable/ic_baseline_skip_previous_24"/>
+
+        <Button
+            android:id="@+id/btnPause"
+            android:paddingStart="8dp"
+            android:layout_width="40dp"
+            android:layout_marginEnd="10dp"
+            android:layout_height="wrap_content"
             android:drawableTint="?colorOnPrimary"
-            android:drawableLeft="@drawable/ic_baseline_play_arrow_24"
-            android:layout_marginEnd="10dp"/>
+            android:drawableLeft="@drawable/ic_baseline_pause_24"/>
 
         <Button
             android:id="@+id/btnStop"
-            android:layout_width="wrap_content"
+            android:paddingStart="8dp"
+            android:layout_width="40dp"
+            android:background="@drawable/md_transparent"
             android:layout_height="wrap_content"
-            android:text="Stop"
-            android:backgroundTint="?colorError"
-            android:drawableTint="?colorOnPrimary"
-            android:drawableLeft="@drawable/ic_baseline_stop_24" />
+            android:drawableLeft="@drawable/ic_baseline_skip_next_24"/>
+
+        <Button
+            android:id="@+id/btnList"
+            android:paddingStart="8dp"
+            android:layout_width="40dp"
+            android:gravity="right"
+            android:layout_weight="1"
+            android:background="@drawable/md_transparent"
+            android:layout_height="wrap_content"
+            android:drawableRight="@drawable/ic_baseline_list_24"/>
     </LinearLayout>
 </LinearLayout>

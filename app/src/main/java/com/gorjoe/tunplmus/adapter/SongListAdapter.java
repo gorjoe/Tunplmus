@@ -13,14 +13,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bluewhaleyt.component.snackbar.SnackbarUtil;
 import com.gorjoe.tunplmus.MediaPlayerActivity;
 import com.gorjoe.tunplmus.R;
-import com.gorjoe.tunplmus.Song;
-import com.gorjoe.tunplmus.SongHandler;
+import com.gorjoe.tunplmus.Utils.SongHandler;
 import com.gorjoe.tunplmus.SongListActivity;
 import com.gorjoe.tunplmus.models.SongModel;
 
 import java.util.ArrayList;
-
-import static androidx.core.content.ContextCompat.startActivity;
+import java.util.concurrent.TimeUnit;
 
 public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.ViewHolder> {
 
@@ -44,14 +42,19 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.ViewHo
         String songName = SongListActivity.getAudioFilesArray().get(position).getTitle();
         holder.name.setText(model.getName());
         holder.author.setText(model.getAuthor());
+        holder.time.setText(SongHandler.convertToMMSS(model.getDuration()));
 
         holder.itemView.setOnClickListener(v -> {
             SnackbarUtil.makeSnackbar((Activity) holder.itemView.getContext(), "item" + position + " clicked, " + songName);
-            SongListActivity.goinplaySong();
+            Intent intent = new Intent(v.getContext(), MediaPlayerActivity.class);
+            v.getContext().startActivity(intent);
+//            overridePendingTransition( R.anim.slide_in_up, 0 );
             SongHandler.PlaySong(position);
         });
 
     }
+
+
 
     @Override
     public int getItemCount() {

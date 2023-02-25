@@ -1,4 +1,4 @@
-package com.gorjoe.tunplmus;
+package com.gorjoe.tunplmus.Utils;
 
 import android.annotation.TargetApi;
 import android.content.ContentUris;

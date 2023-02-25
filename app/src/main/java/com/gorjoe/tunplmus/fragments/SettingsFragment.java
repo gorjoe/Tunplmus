@@ -1,7 +1,6 @@
 package com.gorjoe.tunplmus.fragments;
 
-import android.app.Activity;
-import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -16,10 +15,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.Nullable;
-import androidx.documentfile.provider.DocumentFile;
+import androidx.core.content.ContextCompat;
 
-import com.bluewhaleyt.filemanagement.FileUtil;
-import com.gorjoe.tunplmus.FileUtil2;
 import com.gorjoe.tunplmus.R;
 
 import java.io.File;
@@ -37,7 +34,11 @@ public class SettingsFragment extends PreferenceFragment {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
 
+        SharedPreferences sh = getActivity().getSharedPreferences("directory", Context.MODE_PRIVATE);
+        String path = sh.getString("directory", "unknown");
+
         Preference button = findPreference("directory");
+        button.setSummary(path);
         button.setOnPreferenceClickListener(preference -> {
             launchStorageAccessFramework();
 //            //code for what you want it to do
@@ -56,9 +57,22 @@ public class SettingsFragment extends PreferenceFragment {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
         intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
         intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, sdCardUri);
-        String[] mimeTypes = {"audio/*"};
-        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
         startActivityForResult(intent, REQUEST_CODE_STORAGE_ACCESS);
+    }
+
+    public static Uri getRootContentUriByUriType(Uri treeUri) {
+        String documentId = DocumentsContract.getTreeDocumentId(treeUri);
+        String[] parts = documentId.split(":");
+        String type = parts[0];
+        String path = parts[1];
+
+        Uri contentUri = null;
+        if ("primary".equalsIgnoreCase(type)) {
+            contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        } else {
+            contentUri = MediaStore.Audio.Media.getContentUri(type);
+        }
+        return contentUri;
     }
 
     private Uri getContentUriFromTreeUri(Uri treeUri) {
@@ -88,69 +102,100 @@ public class SettingsFragment extends PreferenceFragment {
 
         Uri contentUri = null;
         if ("primary".equalsIgnoreCase(type)) {
+            Log.e("Type", "it goes to primary");
             contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.buildUpon().appendPath(path).build();
 
             // Build a content URI using the volume ID and document ID
 //            contentUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL).buildUpon().appendPath(docId).build();
 
         } else {
-//            contentUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL).buildUpon().appendPath(path).build();
+            Log.e("Type", "it goes to somethings else");
             contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.buildUpon().appendPath(path).build();
+
+//            contentUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL).buildUpon().appendPath(path).build();
+//            contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.buildUpon().appendPath(path).build();
 //            contentUri = MediaStore.Audio.Media.getContentUri(type).buildUpon().appendPath(path).build();
         }
 
         return contentUri;
     }
 
+    private Uri getSDcardFromTreeUri(Uri treeUri) {
+        File[] f = ContextCompat.getExternalFilesDirs(getContext().getApplicationContext(), null);
+        for (int i = 0; i < f.length; i++) {
+            String path = f[i].getParent().replace("/Android/data/", "").replace(getContext().getPackageName(), "");
+            if (!path.contains("emulated")) {
+                Log.d("DIRS", path); //sdcard and internal and usb
+
+                String docId = DocumentsContract.getTreeDocumentId(treeUri);
+                String[] parts = docId.split(":");
+
+                Uri realpath = Uri.parse(path).buildUpon().appendPath(parts[1]).build();
+
+                return realpath;
+            }
+        }
+        return treeUri;
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_STORAGE_ACCESS && resultCode == Activity.RESULT_OK) {
-            if (data != null) {
-                Uri uri = data.getData();
-                if (uri != null) {
-                    selectedSDCardPath = getContentUriFromTreeUri2(uri).toString();
-//                    selectedSDCardPath = uri.toString();
-                    // Save the selected SD card path to shared preferences or use it as needed
-                    SharedPreferences sharedPreferences = getActivity().getSharedPreferences("directory", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-                    myEdit.putString("directory", selectedSDCardPath);
-                    myEdit.apply();
-
-                    Log.e("Test", "Result URI " + selectedSDCardPath);
-                }
-            }
-        }
-
-//        switch(requestCode) {
-//            case 9999:
-////                Log.e("Test", "Result URI " + data.getData());
-//
-//                // Storing data into SharedPreferences
-//                SharedPreferences sharedPreferences = getActivity().getSharedPreferences("directory", MODE_PRIVATE);
-//                SharedPreferences.Editor myEdit = sharedPreferences.edit();
+//        if (requestCode == REQUEST_CODE_STORAGE_ACCESS && resultCode == Activity.RESULT_OK) {
+//            if (data != null) {
 //                Uri uri = data.getData();
-//                Uri docUri = DocumentsContract.buildDocumentUriUsingTree(uri, DocumentsContract.getTreeDocumentId(uri));
-//                String path = FileUtil2.getPathFromUri(getContext(), docUri);
-////                String path = FileUtil.getFilePathByUri(docUri);
-//                myEdit.putString("directory", path);
-//                myEdit.commit();
-//                //=======================
-////                Uri treeUri = data.getData();
-////                getContext().getContentResolver().takePersistableUriPermission(treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-////                SharedPreferences preferences = getActivity().getSharedPreferences("directory", MODE_PRIVATE);
-////
-////                // Get a DocumentFile object representing the selected file
-////                // Get a DocumentFile object representing the selected file
-////                DocumentFile documentFile = DocumentFile.fromSingleUri(getContext(), treeUri);
-////
-////                // Get the absolute file path of the selected file
-////                String filePath = documentFile.getUri().toString();
-////
-////
-////                preferences.edit().putString("directory", filePath).apply();
-//                break;
+//                if (uri != null) {
+//                    Log.e("Test", "Root is  " + uri);
+//                    selectedSDCardPath = getContentUriFromTreeUri2(uri).toString();
+//                    Uri docUri = DocumentsContract.buildDocumentUriUsingTree(uri, DocumentsContract.getTreeDocumentId(uri));
+//                    String path = FileUtil2.getPathFromUri(getContext(), docUri);
+//                    String filter = selectedSDCardPath.substring("content://media/external/audio/media/".length());
+////                    selectedSDCardPath = uri.toString();
+//                    // Save the selected SD card path to shared preferences or use it as needed
+//                    SharedPreferences sharedPreferences = getActivity().getSharedPreferences("directory", MODE_PRIVATE);
+//                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+//                    myEdit.putString("directory", path);
+//                    myEdit.putString("filter", filter);
+//                    myEdit.apply();
+//
+//                    Log.e("Test", "Result URI " + selectedSDCardPath);
+//                }
+//            }
 //        }
+
+        switch(requestCode) {
+            case REQUEST_CODE_STORAGE_ACCESS:
+//                Log.e("Test", "Result URI " + data.getData());
+
+                // Storing data into SharedPreferences
+                SharedPreferences sharedPreferences = getActivity().getSharedPreferences("directory", MODE_PRIVATE);
+                SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                Uri uri = data.getData();
+                Uri docUri = DocumentsContract.buildDocumentUriUsingTree(uri, DocumentsContract.getTreeDocumentId(uri));
+//                String path = FileUtil2.getPathFromUri(getContext(), docUri);
+                String path = getSDcardFromTreeUri(docUri).toString();
+                Log.e("path", "path is: " + path);
+                Log.e("path", "treepath is: " + getContentUriFromTreeUri2(docUri));
+//                String path = FileUtil.getFilePathByUri(docUri);
+                myEdit.putString("directory", path);
+                myEdit.putString("treedir", getContentUriFromTreeUri2(docUri).toString());
+                myEdit.commit();
+                //=======================
+//                Uri treeUri = data.getData();
+//                getContext().getContentResolver().takePersistableUriPermission(treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+//                SharedPreferences preferences = getActivity().getSharedPreferences("directory", MODE_PRIVATE);
+//
+//                // Get a DocumentFile object representing the selected file
+//                // Get a DocumentFile object representing the selected file
+//                DocumentFile documentFile = DocumentFile.fromSingleUri(getContext(), treeUri);
+//
+//                // Get the absolute file path of the selected file
+//                String filePath = documentFile.getUri().toString();
+//
+//
+//                preferences.edit().putString("directory", filePath).apply();
+                break;
+        }
     }
 
     @Override

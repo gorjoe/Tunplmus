@@ -1,5 +1,7 @@
 package com.gorjoe.tunplmus;
 
+import android.app.Activity;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,23 +20,70 @@ import com.bluewhaleyt.common.CommonUtil;
 import com.bluewhaleyt.common.PermissionUtil;
 import com.bluewhaleyt.crashdebugger.CrashDebugger;
 import com.bluewhaleyt.moderndialog.ModernDialog;
+import com.gorjoe.tunplmus.Utils.DialogUtils;
 import com.gorjoe.tunplmus.adapter.SongListAdapter;
 import com.gorjoe.tunplmus.databinding.ActivitySongListBinding;
 import com.gorjoe.tunplmus.models.SongModel;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 public class SongListActivity extends AppCompatActivity {
 
     private ActivitySongListBinding binding;
-    ModernDialog dialog;
+    private ModernDialog dialog = DialogUtils.dialog;
 
     private ArrayList<SongModel> list = new ArrayList<>();
     private SongListAdapter songlistadapter = new SongListAdapter(list);
 
     static ArrayList<Song> audioFiles = new ArrayList<Song>();
+
+    public static ArrayList<Song> getAudioFilesArray() {
+        return audioFiles;
+    }
+
+    private List<Song> getAudioFilesFromSAF(Activity activity, String dir) {
+//        List<Song> audioFiles = new ArrayList<Song>();
+        audioFiles.clear();
+
+        String[] projection = {
+                MediaStore.Audio.Media._ID,
+                MediaStore.Audio.Media.TITLE,
+                MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media.DURATION,
+                MediaStore.Audio.Media.DATA,
+                MediaStore.Audio.Media.ALBUM};
+
+//        String selection = MediaStore.Audio.Media.DATA + " like ?";
+//        String[] selectionArgs = {getFileContentUri(selectedDirUri).getPath() + "/%"};
+
+        try (Cursor cursor = activity.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, null, null, null)) {
+            if (cursor != null) {
+                int idCol = cursor.getColumnIndex(MediaStore.Audio.Media._ID);
+                int titleCol = cursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
+                int artistCol = cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
+                int durationCol = cursor.getColumnIndex(MediaStore.Audio.Media.DURATION);
+                int dataCol = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
+                int albumCol = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM);
+                while (cursor.moveToNext()) {
+                    long id = cursor.getLong(idCol);
+                    String title = cursor.getString(titleCol);
+                    String artist = cursor.getString(artistCol);
+                    long duration = cursor.getLong(durationCol);
+                    String path = cursor.getString(dataCol);
+                    String album = cursor.getString(albumCol);
+                    Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
+
+                    if (path.startsWith(dir)) {
+                        audioFiles.add(new Song(id, title, artist, duration, path, album, contentUri));
+                    }
+                }
+            }
+        }
+
+        return audioFiles;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,100 +94,11 @@ public class SongListActivity extends AppCompatActivity {
         init();
     }
 
-    public static ArrayList<Song> getAudioFilesArray() {
-        return audioFiles;
-    }
-
-    public void OnlyDirectorySongList(String uriString){
-        Uri selectedDirUri = Uri.parse(uriString);
-        Uri externalUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-
-        Log.e("Test", "Getting from " + externalUri);
-
-        // Query the media content provider for audio files in the selected directory
-        String[] projection = {MediaStore.Audio.Media.DATA,
-                MediaStore.Audio.Media.TITLE,
-                MediaStore.Audio.Media.ARTIST,
-                MediaStore.Audio.Media.ALBUM,
-                MediaStore.Audio.Media.DURATION};
-        String selection = MediaStore.Audio.Media.DATA + " like ?";
-        String[] selectionArgs = {selectedDirUri.getPath() + "/%"};
-
-        for (String ss : selectionArgs) {
-            Log.e("Test", "filter: " + ss);
-        }
-
-        Cursor cursor = getContentResolver().query(externalUri, projection, selection, selectionArgs,null);
-
-        // Add the audio files to the ArrayList
-        if (cursor != null && cursor.moveToFirst()) {
-            int fileCol = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
-            int titleCol = cursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
-            int artistCol = cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
-            int albumCol = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM);
-            int durationCol = cursor.getColumnIndex(MediaStore.Audio.Media.DURATION);
-            do {
-                String filePath = cursor.getString(fileCol);
-                String title = cursor.getString(titleCol);
-                String artist = cursor.getString(artistCol);
-                String album = cursor.getString(albumCol);
-                long duration = cursor.getLong(durationCol);
-                Song audioFile = new Song(filePath, title, artist, album, duration);
-                audioFiles.add(audioFile);
-            } while (cursor.moveToNext());
-        }
-
-        // Close the cursor
-        if (cursor != null) {
-            cursor.close();
-        }
-    }
-
-    public void OnlyDirectorySongListSDcard(String uriString){
-        Uri selectedDirUri = Uri.parse(uriString);
-        Uri externalUri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
-
-        Log.e("Test", "Getting from " + externalUri);
-
-        // Query the media content provider for audio files in the selected directory
-        String[] projection = {MediaStore.Audio.Media.DATA,
-                MediaStore.Audio.Media.TITLE,
-                MediaStore.Audio.Media.ARTIST,
-                MediaStore.Audio.Media.ALBUM,
-                MediaStore.Audio.Media.DURATION};
-        String selection = MediaStore.Audio.Media.DATA + " like ?";
-        String[] selectionArgs = {selectedDirUri.getPath() + "/%"};
-        Cursor cursor = getContentResolver().query(externalUri, projection, selection, selectionArgs,null);
-
-        // Add the audio files to the ArrayList
-        if (cursor != null && cursor.moveToFirst()) {
-            int fileCol = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
-            int titleCol = cursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
-            int artistCol = cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
-            int albumCol = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM);
-            int durationCol = cursor.getColumnIndex(MediaStore.Audio.Media.DURATION);
-            do {
-                String filePath = cursor.getString(fileCol);
-                String title = cursor.getString(titleCol);
-                String artist = cursor.getString(artistCol);
-                String album = cursor.getString(albumCol);
-                long duration = cursor.getLong(durationCol);
-                Song audioFile = new Song(filePath, title, artist, album, duration);
-                audioFiles.add(audioFile);
-            } while (cursor.moveToNext());
-        }
-
-        // Close the cursor
-        if (cursor != null) {
-            cursor.close();
-        }
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
         if (!PermissionUtil.isAlreadyGrantedExternalStorageAccess()) {
-            showDialog();
+            DialogUtils.showRequirePermissionDialog(this, this);
 
         } else {
             if (dialog != null && dialog.dialogDef.isShowing()) {
@@ -152,6 +112,7 @@ public class SongListActivity extends AppCompatActivity {
                 SharedPreferences sh = getSharedPreferences("directory", Context.MODE_PRIVATE);
 //                String dir = sh.getString("directory", FileUtil.getExternalStoragePath());
                 String dir = sh.getString("directory", "unknown");
+                String treedir = sh.getString("treedir", "");
                 Toast.makeText(this, "dir: " + dir, Toast.LENGTH_LONG).show();
 
                 Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
@@ -166,7 +127,9 @@ public class SongListActivity extends AppCompatActivity {
                     linearLayoutManager.setStackFromEnd(true);
                     linearLayoutManager.setReverseLayout(true);
 
-                    OnlyDirectorySongList(dir);
+//                    OnlyDirectorySongListSDcard(dir, treedir);
+
+                    getAudioFilesFromSAF(this, dir);
                     Collections.sort(audioFiles, new Comparator<Song>(){
                         public int compare(Song a, Song b){
                             return a.getTitle().compareTo(b.getTitle());
@@ -175,9 +138,12 @@ public class SongListActivity extends AppCompatActivity {
 
                     for (int i = 0; i < audioFiles.size(); i++) {
                         Song currSong = audioFiles.get(i);
+
+//                        Log.e("wow","Songs: " + currSong.getPath().toString());
                         list.add(new SongModel());
                         list.get(i).setName(currSong.getTitle());
                         list.get(i).setAuthor(currSong.getArtist());
+                        list.get(i).setDuration(currSong.getDuration());
                     }
 //
                     binding.lvSongList.setLayoutManager(linearLayoutManager);
@@ -199,19 +165,10 @@ public class SongListActivity extends AppCompatActivity {
         binding.tvSongName.setSingleLine();
         binding.layoutCurrentSong.setOnClickListener(v -> {
 //            startActivity(new Intent(this, MediaPlayerActivity.class));
-            goinplaySong();
+            Intent intent = new Intent(this, MediaPlayerActivity.class);
+            startActivity(intent);
+            overridePendingTransition( R.anim.slide_in_up, 0 );
         });
-    }
-
-    public void goin() {
-        Intent intent = new Intent(this, MediaPlayerActivity.class);
-        startActivity(intent);
-        overridePendingTransition( R.anim.slide_in_up, 0 );
-    }
-
-    public static void goinplaySong() {
-        SongListActivity p = new SongListActivity();
-        p.goin();
     }
 
     @Override
@@ -235,19 +192,4 @@ public class SongListActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-    private void showDialog() {
-        dialog = new ModernDialog.Builder(this)
-                .setTitle("Permission Needed")
-                .setMessage("This app require File access permission" +
-                        "\nIn order to access your music file" +
-                        "\n Please allow it in the next pop up")
-                .setCancelable(false, false)
-                .setPositiveButton("OK", v -> {
-                    PermissionUtil.requestAllFileAccess(this);
-                })
-                .setNegativeButton(false)
-                .show();
-    }
-
 }

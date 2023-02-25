@@ -1,39 +1,54 @@
 package com.gorjoe.tunplmus;
 
+import android.net.Uri;
+
 public class Song {
 
-    private String path;
-    private String title;
-    private String artist;
-    private String album;
-    private long duration;
+    private long sid;
+    private String stitle;
+    private String sartist;
+    private long sduration;
+    private String spath;
+    private String salbum;
+    private Uri scontentUri;
 
-    public Song(String songFilePath, String songTitle, String songArtist, String songAlbum, long songDuration) {
-        path = songFilePath;
-        title=songTitle;
-        artist=songArtist;
-        album=songAlbum;
-        duration=songDuration;
+//    public Song(String songFilePath, String songTitle, String songArtist, String songAlbum, long songDuration) {
+    public Song(long id, String title, String artist, long duration, String path, String album, Uri contentUri) {
+        sid = id;
+        stitle = title;
+        sartist = artist;
+        sduration = duration;
+        spath = path;
+        salbum = album;
+        scontentUri = contentUri;
     }
 
-    public String getPath(){
-        return path;
+    public long getId() {
+        return sid;
     }
 
     public String getTitle(){
-        return title;
+        return stitle;
     }
 
     public String getArtist(){
-        return artist;
-    }
-
-    public String getAlbum() {
-        return album;
+        return sartist;
     }
 
     public long getDuration(){
-        return duration;
+        return sduration;
+    }
+
+    public String getPath() {
+        return spath;
+    }
+
+    public String getAlbum() {
+        return salbum;
+    }
+
+    public Uri getContentUri() {
+        return scontentUri;
     }
 
 }

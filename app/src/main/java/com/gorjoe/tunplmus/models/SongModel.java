@@ -3,14 +3,16 @@ package com.gorjoe.tunplmus.models;
 public class SongModel {
 
     String name, author;
+    long duration;
 
     public SongModel() {
 
     }
 
-    public SongModel(String name, String author) {
+    public SongModel(String name, String author, long duration) {
         this.name = name;
         this.author = author;
+        this.duration = duration;
     }
 
     public void setName(String name) {
@@ -27,6 +29,14 @@ public class SongModel {
 
     public String getAuthor() {
         return author;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
+
+    public long getDuration() {
+        return duration;
     }
 
 }

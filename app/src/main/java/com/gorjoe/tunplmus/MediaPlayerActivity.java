@@ -75,6 +75,10 @@ public class MediaPlayerActivity extends AppCompatActivity {
         });
     }
 
+    public static SongHandler getSongHandler() {
+        return songHand;
+    }
+
     private void init(Bundle savedInstanceState) {
         CommonUtil.setNavigationBarColorWithSurface(this, CommonUtil.SURFACE_FOLLOW_WINDOW_BACKGROUND);
         CommonUtil.setStatusBarColorWithSurface(this, CommonUtil.SURFACE_FOLLOW_DEFAULT_TOOLBAR);

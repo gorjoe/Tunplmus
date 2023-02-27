@@ -49,8 +49,13 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.ViewHo
             Intent intent = new Intent(v.getContext(), MediaPlayerActivity.class);
             v.getContext().startActivity(intent);
 //            overridePendingTransition( R.anim.slide_in_up, 0 );
-            SongHandler songHand = new SongHandler(MediaPlayerActivity.binding.seekBar);
-            songHand.PlaySong(position);
+//            SongHandler songHand = new SongHandler();
+//            songHand.PlaySong(position);
+
+            MediaPlayerActivity.getSongHandler().PlaySong(position);
+//            MediaPlayerActivity ss = new MediaPlayerActivity();
+//            SongHandler sh = ss.songHand;
+//            sh.PlaySong(position);
         });
 
     }

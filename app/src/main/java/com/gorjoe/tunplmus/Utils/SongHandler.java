@@ -23,6 +23,10 @@ public class SongHandler{
 
     private static ActivityMediaPlayerBinding objbinding = null;
 
+    public SongHandler() {
+
+    }
+
     public SongHandler(SeekBar seebar) {
         this.sBar = seebar;
     }
@@ -123,7 +127,7 @@ public class SongHandler{
 //                objbinding.seekBar.setMax(mediaPlayer.getDuration());
                 Log.e("long", "duration: " + mediaPlayer.getDuration());
 //                MediaPlayerActivity.songHand.setMax(mediaPlayer.getDuration());
-//                setMax(mediaPlayer.getDuration());
+                setMax(mediaPlayer.getDuration());
                 mediaPlayer.start();
                 updateSeekBar();
             }

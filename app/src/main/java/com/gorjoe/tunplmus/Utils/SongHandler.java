@@ -3,6 +3,7 @@ package com.gorjoe.tunplmus.Utils;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
+import android.util.Log;
 import android.widget.SeekBar;
 
 import com.gorjoe.tunplmus.MediaPlayerActivity;
@@ -15,13 +16,24 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 public class SongHandler{
-
     public static MediaPlayer mediaPlayer = new MediaPlayer();
     public static Song nowPlaying = null;
     private static boolean wasPlaying = false;
-    public static SeekBar sBar;
+    private static SeekBar sBar;
 
     private static ActivityMediaPlayerBinding objbinding = null;
+
+    public SongHandler(SeekBar seebar) {
+        this.sBar = seebar;
+    }
+
+    public static void setValue(int value) {
+        sBar.setProgress(value);
+    }
+
+    public static void setMax(int max) {
+        sBar.setMax(max);
+    }
 
     public static void initBinding(ActivityMediaPlayerBinding binding) {
         objbinding = binding;
@@ -80,7 +92,7 @@ public class SongHandler{
                     } catch (Exception e) {
                         return;
                     }
-                    sBar.setProgress(currentPos);
+                    setValue(currentPos);
                 }
             }
         }).start();
@@ -93,7 +105,7 @@ public class SongHandler{
             if (mediaPlayer != null && mediaPlayer.isPlaying()) {
                 StopAllSong();
 //                objbinding.seekBar.setProgress(0);
-                sBar.setProgress(0);
+                setValue(0);
                 wasPlaying = true;
             }
 
@@ -109,7 +121,9 @@ public class SongHandler{
                 mediaPlayer.prepare();
                 mediaPlayer.setLooping(false);
 //                objbinding.seekBar.setMax(mediaPlayer.getDuration());
-                sBar.setMax(mediaPlayer.getDuration());
+                Log.e("long", "duration: " + mediaPlayer.getDuration());
+//                MediaPlayerActivity.songHand.setMax(mediaPlayer.getDuration());
+                setMax(mediaPlayer.getDuration());
                 mediaPlayer.start();
                 updateSeekBar();
             }

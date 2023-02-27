@@ -18,6 +18,7 @@ import static com.gorjoe.tunplmus.Utils.SongHandler.updatePlayTime;
 public class MediaPlayerActivity extends AppCompatActivity {
 
     private ActivityMediaPlayerBinding binding;
+    public static SongHandler songHand;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,9 +27,7 @@ public class MediaPlayerActivity extends AppCompatActivity {
         binding = ActivityMediaPlayerBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         init(savedInstanceState);
-        SongHandler.sBar = (SeekBar) findViewById(R.id.seekBar);
-        Log.e("test", "hi msg ===================");
-        Log.e("sbar", SongHandler.sBar.toString());
+        songHand = new SongHandler(binding.seekBar);
         SongHandler.initBinding(binding);
         SongHandler.updateNowPlayingSongInfo();
 
@@ -58,7 +57,7 @@ public class MediaPlayerActivity extends AppCompatActivity {
 
                 if (x <= 0 && SongHandler.mediaPlayer != null && !SongHandler.mediaPlayer.isPlaying()) {
                     SongHandler.StopAllSong();
-                    binding.seekBar.setProgress(0);
+                    songHand.setValue(0);
                 }
             }
 

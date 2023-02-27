@@ -10,8 +10,8 @@ import com.bluewhaleyt.moderndialog.ModernDialog;
 public class DialogUtils {
     public static ModernDialog dialog;
 
-    public static void showRequirePermissionDialog(Context context, AppCompatActivity activity) {
-        dialog = new ModernDialog.Builder(context)
+    public static void showRequirePermissionDialog(AppCompatActivity activity) {
+        dialog = new ModernDialog.Builder(activity)
                 .setTitle("Permission Needed")
                 .setMessage("This app require File access permission" +
                         "\nIn order to access your music file" +

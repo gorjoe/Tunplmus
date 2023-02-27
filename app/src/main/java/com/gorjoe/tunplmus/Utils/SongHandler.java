@@ -1,8 +1,12 @@
 package com.gorjoe.tunplmus.Utils;
 
+import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
-import android.os.Handler;
+import android.widget.SeekBar;
 
+import com.gorjoe.tunplmus.MediaPlayerActivity;
+import com.gorjoe.tunplmus.R;
 import com.gorjoe.tunplmus.Song;
 import com.gorjoe.tunplmus.SongListActivity;
 import com.gorjoe.tunplmus.databinding.ActivityMediaPlayerBinding;
@@ -10,53 +14,129 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-public class SongHandler {
-    
-    static MediaPlayer mediaPlayer = new MediaPlayer();
-    static Song nowPlaying = null;
+public class SongHandler{
 
-    public static void updateNowPlayingSongInfo(ActivityMediaPlayerBinding binding) {
-        updatePlayTime(binding);
+    public static MediaPlayer mediaPlayer = new MediaPlayer();
+    public static Song nowPlaying = null;
+    private static boolean wasPlaying = false;
+    public static SeekBar sBar;
+
+    private static ActivityMediaPlayerBinding objbinding = null;
+
+    public static void initBinding(ActivityMediaPlayerBinding binding) {
+        objbinding = binding;
     }
 
-    public static void updatePlayTime(ActivityMediaPlayerBinding binding) {
-        binding.timeNow.setText(convertToMMSS(mediaPlayer.getCurrentPosition()));
-        binding.timeEnd.setText(convertToMMSS(mediaPlayer.getDuration()));
+    public static void updateNowPlayingSongInfo() {
+        updatePlayTime();
     }
+
+    public static void updatePlayTime() {
+        objbinding.timeNow.setText(convertToMMSS(mediaPlayer.getCurrentPosition()));
+        objbinding.timeEnd.setText(convertToMMSS(mediaPlayer.getDuration()));
+
+//        MediaPlayer.OnBufferingUpdateListener bufferingListener = new MediaPlayer.OnBufferingUpdateListener() {
+//            public void onBufferingUpdate(MediaPlayer mp, int percent) {
+//                //code to increase your secondary seekbar
+//                objbinding.seekBar.setProgress(percent);
+//            }
+//        };
+    }
+
+    public static void StopAllSong() {
+        mediaPlayer.stop();
+        mediaPlayer.release();
+        mediaPlayer = new MediaPlayer();
+    }
+
+//    public void run() {
+//        int currentPos = mediaPlayer.getCurrentPosition();
+//        int total = mediaPlayer.getDuration();
+//
+//        while (mediaPlayer != null && mediaPlayer.isPlaying() && currentPos < total) {
+//            try {
+//                Thread.sleep(1000);
+//                currentPos = mediaPlayer.getCurrentPosition();
+//            } catch (Exception e) {
+//                return;
+//            }
+//
+//            sBar.setProgress(currentPos);
+//        }
+//    }
+
+    public static void updateSeekBar() {
+        final int total = mediaPlayer.getDuration();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int currentPos = mediaPlayer.getCurrentPosition();
+
+                while (mediaPlayer != null && mediaPlayer.isPlaying() && currentPos < total) {
+                    try {
+                        Thread.sleep(1000);
+                        currentPos = mediaPlayer.getCurrentPosition();
+                    } catch (Exception e) {
+                        return;
+                    }
+                    sBar.setProgress(currentPos);
+                }
+            }
+        }).start();
+    }
+
 
     public static void PlaySong(int selectedIndex) {
-        // Get the File object for the selected audio file
-        Song selectedAudioFile = SongListActivity.getAudioFilesArray().get(selectedIndex);
-        String filePath = selectedAudioFile.getPath();
-        File selectedFile = new File(filePath);
-
-        nowPlaying = selectedAudioFile;
-
         try {
-            // Reset the MediaPlayer before setting to data source
-            mediaPlayer.reset();
 
-            // Set the selected audio file as the data source for the MediaPlayer
-            mediaPlayer.setDataSource(selectedFile.getAbsolutePath());
+            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                StopAllSong();
+//                objbinding.seekBar.setProgress(0);
+                sBar.setProgress(0);
+                wasPlaying = true;
+            }
 
-            // Prepare the MediaPlayer for playback
-            mediaPlayer.prepare();
+            if (!wasPlaying) {
+                // Get the File object for the selected audio file
+                Song selectedAudioFile = SongListActivity.getAudioFilesArray().get(selectedIndex);
+                String filePath = selectedAudioFile.getPath();
+                File selectedFile = new File(filePath);
 
-            // Start playback
-            mediaPlayer.start();
+                nowPlaying = selectedAudioFile;
+                mediaPlayer.reset();
+                mediaPlayer.setDataSource(selectedFile.getAbsolutePath());
+                mediaPlayer.prepare();
+                mediaPlayer.setLooping(false);
+//                objbinding.seekBar.setMax(mediaPlayer.getDuration());
+                sBar.setMax(mediaPlayer.getDuration());
+                mediaPlayer.start();
+                updateSeekBar();
+            }
+            wasPlaying = false;
         } catch (IOException e) {
             // Handle any errors that occur
             e.printStackTrace();
         }
     }
 
-    public static void PauseResumeSong() {
+    public static void PauseResumeSong(Context context) {
         if (mediaPlayer.isPlaying()){
             mediaPlayer.pause();
+            Drawable img = context.getResources().getDrawable(R.drawable.ic_baseline_play_arrow_24);
+            img.setBounds(0, 0, 60, 60);
+            objbinding.btnPause.setCompoundDrawables(img, null, null, null);
 
         } else {
             mediaPlayer.start();
+            Drawable img = context.getResources().getDrawable(R.drawable.ic_baseline_pause_24);
+            img.setBounds(0, 0, 60, 60);
+            objbinding.btnPause.setCompoundDrawables(img, null, null, null);
         }
+    }
+
+    public static void SeekSong(int time) {
+        mediaPlayer.seekTo(time);
     }
 
     public static void ToggleLoopSong() {

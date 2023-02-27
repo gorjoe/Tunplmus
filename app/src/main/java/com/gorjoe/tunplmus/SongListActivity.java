@@ -98,7 +98,7 @@ public class SongListActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (!PermissionUtil.isAlreadyGrantedExternalStorageAccess()) {
-            DialogUtils.showRequirePermissionDialog(this, this);
+            DialogUtils.showRequirePermissionDialog(this);
 
         } else {
             if (dialog != null && dialog.dialogDef.isShowing()) {

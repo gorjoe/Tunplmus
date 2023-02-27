@@ -1,24 +1,23 @@
 package com.gorjoe.tunplmus.adapter;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bluewhaleyt.component.snackbar.SnackbarUtil;
 import com.gorjoe.tunplmus.MediaPlayerActivity;
 import com.gorjoe.tunplmus.R;
 import com.gorjoe.tunplmus.Utils.SongHandler;
 import com.gorjoe.tunplmus.SongListActivity;
 import com.gorjoe.tunplmus.models.SongModel;
-
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.ViewHolder> {
 
@@ -46,16 +45,15 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.ViewHo
 
         holder.itemView.setOnClickListener(v -> {
             SnackbarUtil.makeSnackbar((Activity) holder.itemView.getContext(), "item" + position + " clicked, " + songName);
-            Intent intent = new Intent(v.getContext(), MediaPlayerActivity.class);
-            v.getContext().startActivity(intent);
+            Context context = holder.itemView.getContext();
+            Intent intent = new Intent(context, MediaPlayerActivity.class);
+            context.startActivity(intent);
 //            overridePendingTransition( R.anim.slide_in_up, 0 );
-//            SongHandler songHand = new SongHandler();
-//            songHand.PlaySong(position);
-
-            MediaPlayerActivity.getSongHandler().PlaySong(position);
-//            MediaPlayerActivity ss = new MediaPlayerActivity();
-//            SongHandler sh = ss.songHand;
-//            sh.PlaySong(position);
+            LayoutInflater inflater = LayoutInflater.from(holder.itemView.getContext());
+            View view = inflater.inflate(R.layout.activity_media_player, null);
+            SeekBar sb = view.findViewById(R.id.seekBar);
+            SongHandler songHand = new SongHandler(sb);
+            songHand.PlaySong(position);
         });
 
     }

@@ -2,10 +2,6 @@ package com.gorjoe.tunplmus;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.SeekBar;
 
 import com.bluewhaleyt.common.CommonUtil;
@@ -29,7 +25,6 @@ public class MediaPlayerActivity extends AppCompatActivity {
         init(savedInstanceState);
         songHand = new SongHandler(binding.seekBar);
         SongHandler.initBinding(binding);
-        SongHandler.updateNowPlayingSongInfo();
 
         runOnUiThread(new Runnable() {
 
@@ -73,10 +68,6 @@ public class MediaPlayerActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    public static SongHandler getSongHandler() {
-        return songHand;
     }
 
     private void init(Bundle savedInstanceState) {

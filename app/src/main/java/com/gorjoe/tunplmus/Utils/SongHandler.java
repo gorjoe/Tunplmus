@@ -5,8 +5,6 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.util.Log;
 import android.widget.SeekBar;
-
-import com.gorjoe.tunplmus.MediaPlayerActivity;
 import com.gorjoe.tunplmus.R;
 import com.gorjoe.tunplmus.Song;
 import com.gorjoe.tunplmus.SongListActivity;
@@ -18,45 +16,27 @@ import java.util.concurrent.TimeUnit;
 public class SongHandler{
     public static MediaPlayer mediaPlayer = new MediaPlayer();
     public static Song nowPlaying = null;
+
     private static boolean wasPlaying = false;
     private static SeekBar sBar;
-
+    private static double sBarStep = 0;
     private static ActivityMediaPlayerBinding objbinding = null;
-
-    public SongHandler() {
-
-    }
 
     public SongHandler(SeekBar seebar) {
         this.sBar = seebar;
     }
 
     public static void setValue(int value) {
-        sBar.setProgress(value);
-    }
-
-    public static void setMax(int max) {
-        sBar.setMax(max);
+        sBar.setProgress((int) Math.round(value / sBarStep));
     }
 
     public static void initBinding(ActivityMediaPlayerBinding binding) {
         objbinding = binding;
     }
 
-    public static void updateNowPlayingSongInfo() {
-        updatePlayTime();
-    }
-
     public static void updatePlayTime() {
         objbinding.timeNow.setText(convertToMMSS(mediaPlayer.getCurrentPosition()));
         objbinding.timeEnd.setText(convertToMMSS(mediaPlayer.getDuration()));
-
-//        MediaPlayer.OnBufferingUpdateListener bufferingListener = new MediaPlayer.OnBufferingUpdateListener() {
-//            public void onBufferingUpdate(MediaPlayer mp, int percent) {
-//                //code to increase your secondary seekbar
-//                objbinding.seekBar.setProgress(percent);
-//            }
-//        };
     }
 
     public static void StopAllSong() {
@@ -65,21 +45,6 @@ public class SongHandler{
         mediaPlayer = new MediaPlayer();
     }
 
-//    public void run() {
-//        int currentPos = mediaPlayer.getCurrentPosition();
-//        int total = mediaPlayer.getDuration();
-//
-//        while (mediaPlayer != null && mediaPlayer.isPlaying() && currentPos < total) {
-//            try {
-//                Thread.sleep(1000);
-//                currentPos = mediaPlayer.getCurrentPosition();
-//            } catch (Exception e) {
-//                return;
-//            }
-//
-//            sBar.setProgress(currentPos);
-//        }
-//    }
 
     public static void updateSeekBar() {
         final int total = mediaPlayer.getDuration();
@@ -97,6 +62,8 @@ public class SongHandler{
                         return;
                     }
                     setValue(currentPos);
+//                    updatePlayTime();
+                    Log.e("loop", "loop pos: " + currentPos + " / " + sBar.getMax());
                 }
             }
         }).start();
@@ -108,13 +75,11 @@ public class SongHandler{
 
             if (mediaPlayer != null && mediaPlayer.isPlaying()) {
                 StopAllSong();
-//                objbinding.seekBar.setProgress(0);
                 setValue(0);
                 wasPlaying = true;
             }
 
             if (!wasPlaying) {
-                // Get the File object for the selected audio file
                 Song selectedAudioFile = SongListActivity.getAudioFilesArray().get(selectedIndex);
                 String filePath = selectedAudioFile.getPath();
                 File selectedFile = new File(filePath);
@@ -124,16 +89,14 @@ public class SongHandler{
                 mediaPlayer.setDataSource(selectedFile.getAbsolutePath());
                 mediaPlayer.prepare();
                 mediaPlayer.setLooping(false);
-//                objbinding.seekBar.setMax(mediaPlayer.getDuration());
                 Log.e("long", "duration: " + mediaPlayer.getDuration());
-//                MediaPlayerActivity.songHand.setMax(mediaPlayer.getDuration());
-                setMax(mediaPlayer.getDuration());
+                sBarStep = mediaPlayer.getDuration() / 100;
+
                 mediaPlayer.start();
                 updateSeekBar();
             }
             wasPlaying = false;
         } catch (IOException e) {
-            // Handle any errors that occur
             e.printStackTrace();
         }
     }
@@ -154,7 +117,7 @@ public class SongHandler{
     }
 
     public static void SeekSong(int time) {
-        mediaPlayer.seekTo(time);
+        mediaPlayer.seekTo((int) Math.ceil(time * sBarStep));
     }
 
     public static void ToggleLoopSong() {

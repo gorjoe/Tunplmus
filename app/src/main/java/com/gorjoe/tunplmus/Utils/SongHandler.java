@@ -123,7 +123,7 @@ public class SongHandler{
 //                objbinding.seekBar.setMax(mediaPlayer.getDuration());
                 Log.e("long", "duration: " + mediaPlayer.getDuration());
 //                MediaPlayerActivity.songHand.setMax(mediaPlayer.getDuration());
-                setMax(mediaPlayer.getDuration());
+//                setMax(mediaPlayer.getDuration());
                 mediaPlayer.start();
                 updateSeekBar();
             }

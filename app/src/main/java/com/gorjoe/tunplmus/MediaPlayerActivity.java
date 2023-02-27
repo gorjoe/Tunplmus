@@ -17,7 +17,7 @@ import static com.gorjoe.tunplmus.Utils.SongHandler.updatePlayTime;
 
 public class MediaPlayerActivity extends AppCompatActivity {
 
-    private ActivityMediaPlayerBinding binding;
+    public static ActivityMediaPlayerBinding binding;
     public static SongHandler songHand;
 
     @Override

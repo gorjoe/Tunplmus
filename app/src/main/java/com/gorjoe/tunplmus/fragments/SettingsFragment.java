@@ -52,6 +52,17 @@ public class SettingsFragment extends PreferenceFragment {
             return true;
         });
     }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        
+        SharedPreferences sh = getActivity().getSharedPreferences("directory", Context.MODE_PRIVATE);
+        String path = sh.getString("directory", "unknown");
+
+        Preference button = findPreference("directory");
+        button.setSummary(path);
+    }
 
     private void launchStorageAccessFramework() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);

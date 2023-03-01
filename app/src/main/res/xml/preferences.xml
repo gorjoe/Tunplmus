@@ -10,10 +10,24 @@
             android:title="Select Song Folder"
             android:icon="@drawable/ic_baseline_music_note_24"
             android:summary="not selected"/>
+        
         <SwitchPreference
             android:defaultValue="false"
-            android:key="switch_preference_1"
-            android:title="Switch preference" />
+            android:key="shake"
+            android:title="Shake to next song"
+            android:summary="Use groroscope to enable you to shake to next song"/>
+        
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="speaker_alert"
+            android:title="Speaker Alert"
+            android:summary="Alert you when you are playing though speaker" />
+        
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="force_mono"
+            android:title="Force mono"
+            android:summary="Force to play all audio file mono" />
 
     </PreferenceCategory>
 

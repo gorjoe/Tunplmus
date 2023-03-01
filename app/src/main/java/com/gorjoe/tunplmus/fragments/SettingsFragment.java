@@ -54,7 +54,7 @@ public class SettingsFragment extends PreferenceFragment {
     }
     
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         
         SharedPreferences sh = getActivity().getSharedPreferences("directory", Context.MODE_PRIVATE);

@@ -15,7 +15,7 @@
             android:defaultValue="false"
             android:key="shake"
             android:title="Shake to next song"
-            android:summary="Use groroscope to enable you to shake to next song"/>
+            android:summary="Use gyroscope to enable you to shake to next song"/>
         
         <SwitchPreference
             android:defaultValue="true"

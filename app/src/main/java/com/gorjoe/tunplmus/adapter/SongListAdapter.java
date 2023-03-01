@@ -48,7 +48,8 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.ViewHo
             Context context = holder.itemView.getContext();
             Intent intent = new Intent(context, MediaPlayerActivity.class);
             context.startActivity(intent);
-//            overridePendingTransition( R.anim.slide_in_up, 0 );
+            Activity activity = (Activity) context;
+            activity.overridePendingTransition( R.anim.slide_in_up, 0 );
             LayoutInflater inflater = LayoutInflater.from(holder.itemView.getContext());
             View view = inflater.inflate(R.layout.activity_media_player, null);
             SeekBar sb = view.findViewById(R.id.seekBar);

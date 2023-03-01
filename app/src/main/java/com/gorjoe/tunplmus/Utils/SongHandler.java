@@ -63,7 +63,7 @@ public class SongHandler{
                     }
                     setValue(currentPos);
 //                    updatePlayTime();
-                    Log.e("loop", "loop pos: " + currentPos + " / " + sBar.getMax());
+                    Log.e("loop", "loop pos: " + (int) Math.round(currentPos / sBarStep) + " / " + sBar.getMax());
                 }
             }
         }).start();

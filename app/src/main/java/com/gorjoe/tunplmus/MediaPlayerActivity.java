@@ -14,6 +14,8 @@ public class MediaPlayerActivity extends AppCompatActivity {
     public static ActivityMediaPlayerBinding binding;
     public static SongHandler songHand;
 
+    private static boolean stopThread = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,39 +26,6 @@ public class MediaPlayerActivity extends AppCompatActivity {
         songHand = new SongHandler(binding.seekBar);
         SongHandler.initBinding(binding);
         binding.timeEnd.setText(SongHandler.convertToMMSS(SongHandler.mediaPlayer.getDuration()));
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                MediaPlayer mediaPlayer = SongHandler.mediaPlayer;
-                final int total = mediaPlayer.getDuration();
-                int currentPos = SongHandler.mediaPlayer.getCurrentPosition();
-
-                while (mediaPlayer != null && mediaPlayer.isPlaying() && currentPos < total) {
-                    try {
-                        Thread.sleep(500);
-                        synchronized (this) {
-                            wait(1000);
-
-                            currentPos = mediaPlayer.getCurrentPosition();
-                            int finalCurrentPos = currentPos;
-
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    binding.timeNow.setText(SongHandler.convertToMMSS(finalCurrentPos));
-                                    binding.seekBar.setProgress((int) Math.round(finalCurrentPos / SongHandler.sBarStep));
-//                                    Log.e("loop", "loop pos: " + (int) Math.round(finalCurrentPos / SongHandler.sBarStep) + " / " + binding.seekBar.getMax());
-                                }
-                            });
-                        }
-                    } catch (Exception e) {
-                        return;
-                    }
-                }
-            }
-        }).start();
-
 
         binding.btnPause.setOnClickListener(v -> {
             SongHandler.PauseResumeSong(this);
@@ -92,6 +61,55 @@ public class MediaPlayerActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Runnable songRunnable = new Runnable() {
+            @Override
+            public void run() {
+                MediaPlayer mediaPlayer = SongHandler.mediaPlayer;
+                final int total = mediaPlayer.getDuration();
+                int currentPos = SongHandler.mediaPlayer.getCurrentPosition();
+
+                while (!stopThread && mediaPlayer != null && mediaPlayer.isPlaying() && currentPos < total) {
+                    try {
+                        Thread.sleep(500);
+                        synchronized (this) {
+                            wait(1000);
+
+                            currentPos = mediaPlayer.getCurrentPosition();
+                            int finalCurrentPos = currentPos;
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    binding.timeNow.setText(SongHandler.convertToMMSS(finalCurrentPos));
+                                    binding.seekBar.setProgress((int) Math.round(finalCurrentPos / SongHandler.sBarStep));
+//                                    Log.e("loop", "loop pos: " + (int) Math.round(finalCurrentPos / SongHandler.sBarStep) + " / " + binding.seekBar.getMax());
+                                }
+                            });
+                        }
+                    } catch (Exception e) {
+                        return;
+                    }
+                }
+                return;
+            }
+        };
+        Thread thread = new Thread(songRunnable);
+        thread.start();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopThread();
+    }
+
+    public static void stopThread() {
+        stopThread = true;
     }
 
     private void init(Bundle savedInstanceState) {

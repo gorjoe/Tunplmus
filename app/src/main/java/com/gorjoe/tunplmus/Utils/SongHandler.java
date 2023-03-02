@@ -58,7 +58,7 @@ public class SongHandler{
                 File selectedFile = new File(filePath);
 
                 nowPlaying = selectedAudioFile;
-                mediaPlayer.reset();
+//                mediaPlayer.reset();
                 mediaPlayer.setDataSource(selectedFile.getAbsolutePath());
                 mediaPlayer.prepare();
                 mediaPlayer.setLooping(false);

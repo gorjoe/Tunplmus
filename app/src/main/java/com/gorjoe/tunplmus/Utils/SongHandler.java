@@ -5,12 +5,15 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.util.Log;
 import android.widget.SeekBar;
+
+import com.gorjoe.tunplmus.MediaPlayerActivity;
 import com.gorjoe.tunplmus.R;
 import com.gorjoe.tunplmus.Song;
 import com.gorjoe.tunplmus.SongListActivity;
 import com.gorjoe.tunplmus.databinding.ActivityMediaPlayerBinding;
 import java.io.File;
 import java.io.IOException;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 public class SongHandler{
@@ -19,7 +22,7 @@ public class SongHandler{
 
     private static boolean wasPlaying = false;
     private static SeekBar sBar;
-    private static double sBarStep = 0;
+    public static double sBarStep = 0;
     private static ActivityMediaPlayerBinding objbinding = null;
 
     public SongHandler(SeekBar seebar) {
@@ -34,41 +37,11 @@ public class SongHandler{
         objbinding = binding;
     }
 
-    public static void updatePlayTime() {
-        objbinding.timeNow.setText(convertToMMSS(mediaPlayer.getCurrentPosition()));
-        objbinding.timeEnd.setText(convertToMMSS(mediaPlayer.getDuration()));
-    }
-
     public static void StopAllSong() {
         mediaPlayer.stop();
         mediaPlayer.release();
         mediaPlayer = new MediaPlayer();
     }
-
-
-    public static void updateSeekBar() {
-        final int total = mediaPlayer.getDuration();
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                int currentPos = mediaPlayer.getCurrentPosition();
-
-                while (mediaPlayer != null && mediaPlayer.isPlaying() && currentPos < total) {
-                    try {
-                        Thread.sleep(1000);
-                        currentPos = mediaPlayer.getCurrentPosition();
-                    } catch (Exception e) {
-                        return;
-                    }
-                    setValue(currentPos);
-//                    updatePlayTime();
-                    Log.e("loop", "loop pos: " + (int) Math.round(currentPos / sBarStep) + " / " + sBar.getMax());
-                }
-            }
-        }).start();
-    }
-
 
     public static void PlaySong(int selectedIndex) {
         try {
@@ -89,11 +62,9 @@ public class SongHandler{
                 mediaPlayer.setDataSource(selectedFile.getAbsolutePath());
                 mediaPlayer.prepare();
                 mediaPlayer.setLooping(false);
-                Log.e("long", "duration: " + mediaPlayer.getDuration());
                 sBarStep = mediaPlayer.getDuration() / 100;
 
                 mediaPlayer.start();
-                updateSeekBar();
             }
             wasPlaying = false;
         } catch (IOException e) {

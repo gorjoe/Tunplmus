@@ -1,15 +1,13 @@
 package com.gorjoe.tunplmus;
 
 import androidx.appcompat.app.AppCompatActivity;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.widget.SeekBar;
-
 import com.bluewhaleyt.common.CommonUtil;
 import com.bluewhaleyt.crashdebugger.CrashDebugger;
 import com.gorjoe.tunplmus.Utils.SongHandler;
 import com.gorjoe.tunplmus.databinding.ActivityMediaPlayerBinding;
-
-import static com.gorjoe.tunplmus.Utils.SongHandler.updatePlayTime;
 
 public class MediaPlayerActivity extends AppCompatActivity {
 
@@ -25,14 +23,40 @@ public class MediaPlayerActivity extends AppCompatActivity {
         init(savedInstanceState);
         songHand = new SongHandler(binding.seekBar);
         SongHandler.initBinding(binding);
+        binding.timeEnd.setText(SongHandler.convertToMMSS(SongHandler.mediaPlayer.getDuration()));
 
-        runOnUiThread(new Runnable() {
-
+        new Thread(new Runnable() {
             @Override
             public void run() {
-                updatePlayTime();
+                MediaPlayer mediaPlayer = SongHandler.mediaPlayer;
+                final int total = mediaPlayer.getDuration();
+                int currentPos = SongHandler.mediaPlayer.getCurrentPosition();
+
+                while (mediaPlayer != null && mediaPlayer.isPlaying() && currentPos < total) {
+                    try {
+                        Thread.sleep(500);
+                        synchronized (this) {
+                            wait(1000);
+
+                            currentPos = mediaPlayer.getCurrentPosition();
+                            int finalCurrentPos = currentPos;
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    binding.timeNow.setText(SongHandler.convertToMMSS(finalCurrentPos));
+                                    binding.seekBar.setProgress((int) Math.round(finalCurrentPos / SongHandler.sBarStep));
+//                                    Log.e("loop", "loop pos: " + (int) Math.round(finalCurrentPos / SongHandler.sBarStep) + " / " + binding.seekBar.getMax());
+                                }
+                            });
+                        }
+                    } catch (Exception e) {
+                        return;
+                    }
+                }
             }
-        });
+        }).start();
+
 
         binding.btnPause.setOnClickListener(v -> {
             SongHandler.PauseResumeSong(this);

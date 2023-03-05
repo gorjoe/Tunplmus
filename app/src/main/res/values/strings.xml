@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Tunplmus</string>
+    <string name="menu_blank" />
 </resources>

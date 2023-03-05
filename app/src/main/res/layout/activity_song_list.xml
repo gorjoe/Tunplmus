@@ -17,19 +17,12 @@
             android:id="@+id/lvSongList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:bubbleColor="#00bb00"
-            app:bubbleTextColor="#ffffff"
-            app:handleColor="#999999" />
+            app:bubbleColor="?colorPrimary"
+            app:bubbleSize="small"
+            app:bubbleTextColor="?colorOnPrimary"
+            app:handleColor="?colorSurfaceVariant" />
 
     </FrameLayout>
-
-<!--    <androidx.recyclerview.widget.RecyclerView-->
-<!--        android:id="@+id/lvSongList"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="0dp"-->
-<!--        android:layout_weight="1">-->
-
-<!--    </androidx.recyclerview.widget.RecyclerView>-->
 
     <ProgressBar
         android:id="@+id/pbTime"
@@ -75,38 +68,18 @@
         </LinearLayout>
 
     </LinearLayout>
-    
-    <LinearLayout
+
+    <nl.joery.animatedbottombar.AnimatedBottomBar
+        android:id="@+id/bottom_bar"
+        android:background="?colorPrimary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center">
-
-        <Button
-            android:id="@+id/btnSongList"
-            android:paddingStart="8dp"
-            android:layout_width="40dp"
-            android:layout_marginEnd="10dp"
-            android:background="@drawable/md_transparent"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_baseline_skip_previous_24"/>
-
-        <Button
-            android:id="@+id/btnSearch"
-            android:paddingStart="8dp"
-            android:layout_width="40dp"
-            android:layout_marginEnd="10dp"
-            android:layout_height="wrap_content"
-            android:drawableTint="?colorOnPrimary"
-            android:drawableLeft="@drawable/ic_baseline_pause_24"/>
-
-        <Button
-            android:id="@+id/btnSettings"
-            android:paddingStart="8dp"
-            android:layout_width="40dp"
-            android:background="@drawable/md_transparent"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_baseline_skip_next_24"/>
-    </LinearLayout>
+        app:abb_selectedTabType="text"
+        app:abb_indicatorAppearance="round"
+        app:abb_indicatorMargin="16dp"
+        app:abb_indicatorHeight="4dp"
+        app:abb_rippleEnabled="true"
+        app:abb_tabs="@menu/tabs"
+        app:abb_selectedIndex="1" />
 
 </LinearLayout>

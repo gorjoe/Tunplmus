@@ -24,12 +24,11 @@ import com.gorjoe.tunplmus.Utils.DialogUtils;
 import com.gorjoe.tunplmus.adapter.SongListAdapter;
 import com.gorjoe.tunplmus.databinding.ActivitySongListBinding;
 import com.gorjoe.tunplmus.models.SongModel;
-import com.l4digital.fastscroll.FastScrollRecyclerView;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import nl.joery.animatedbottombar.AnimatedBottomBar;
 
 public class SongListActivity extends AppCompatActivity {
 
@@ -68,6 +67,7 @@ public class SongListActivity extends AppCompatActivity {
                 int durationCol = cursor.getColumnIndex(MediaStore.Audio.Media.DURATION);
                 int dataCol = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
                 int albumCol = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM);
+                int rateCol = cursor.getColumnIndex(MediaStore.Audio.Media.BITRATE);
                 while (cursor.moveToNext()) {
                     long id = cursor.getLong(idCol);
                     String title = cursor.getString(titleCol);
@@ -170,6 +170,18 @@ public class SongListActivity extends AppCompatActivity {
             Intent intent = new Intent(this, MediaPlayerActivity.class);
             startActivity(intent);
             overridePendingTransition( R.anim.slide_in_up, 0 );
+        });
+
+        binding.bottomBar.setOnTabSelectListener(new AnimatedBottomBar.OnTabSelectListener() {
+            @Override
+            public void onTabSelected(int lastIndex, AnimatedBottomBar.Tab lastTab, int newIndex, AnimatedBottomBar.Tab newTab) {
+                Log.d("bottom_bar", "Selected index: " + newIndex + ", title: " + newTab.getTitle());
+            }
+
+            @Override
+            public void onTabReselected(int index, AnimatedBottomBar.Tab tab) {
+//                Log.d("bottom_bar", "Reselected index: " + index + ", title: " + tab.getTitle());
+            }
         });
     }
 

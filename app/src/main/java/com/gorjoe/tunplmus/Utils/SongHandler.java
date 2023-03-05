@@ -3,17 +3,13 @@ package com.gorjoe.tunplmus.Utils;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
-import android.util.Log;
 import android.widget.SeekBar;
-
-import com.gorjoe.tunplmus.MediaPlayerActivity;
 import com.gorjoe.tunplmus.R;
 import com.gorjoe.tunplmus.Song;
 import com.gorjoe.tunplmus.SongListActivity;
 import com.gorjoe.tunplmus.databinding.ActivityMediaPlayerBinding;
 import java.io.File;
 import java.io.IOException;
-import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 public class SongHandler{

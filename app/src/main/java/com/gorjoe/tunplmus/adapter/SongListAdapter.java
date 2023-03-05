@@ -17,9 +17,11 @@ import com.gorjoe.tunplmus.R;
 import com.gorjoe.tunplmus.Utils.SongHandler;
 import com.gorjoe.tunplmus.SongListActivity;
 import com.gorjoe.tunplmus.models.SongModel;
+import com.l4digital.fastscroll.FastScroller;
+
 import java.util.ArrayList;
 
-public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.ViewHolder> {
+public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.ViewHolder> implements FastScroller.SectionIndexer {
 
     ArrayList<SongModel> list;
 
@@ -64,6 +66,11 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.ViewHo
     @Override
     public int getItemCount() {
         return list.size();
+    }
+
+    @Override
+    public String getSectionText(int position) {
+        return SongListActivity.getAudioFilesArray().get(position).getTitle().substring(0, 1);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

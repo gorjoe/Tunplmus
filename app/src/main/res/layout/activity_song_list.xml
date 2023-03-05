@@ -6,14 +6,30 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-<!--    <ListView-->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/lvSongList"
+    <FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
-    </androidx.recyclerview.widget.RecyclerView>
+        <com.l4digital.fastscroll.FastScrollRecyclerView
+            android:id="@+id/lvSongList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:bubbleColor="#00bb00"
+            app:bubbleTextColor="#ffffff"
+            app:handleColor="#999999" />
+
+    </FrameLayout>
+
+<!--    <androidx.recyclerview.widget.RecyclerView-->
+<!--        android:id="@+id/lvSongList"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:layout_weight="1">-->
+
+<!--    </androidx.recyclerview.widget.RecyclerView>-->
 
     <ProgressBar
         android:id="@+id/pbTime"

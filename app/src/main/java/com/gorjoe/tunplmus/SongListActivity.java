@@ -24,6 +24,8 @@ import com.gorjoe.tunplmus.Utils.DialogUtils;
 import com.gorjoe.tunplmus.adapter.SongListAdapter;
 import com.gorjoe.tunplmus.databinding.ActivitySongListBinding;
 import com.gorjoe.tunplmus.models.SongModel;
+import com.l4digital.fastscroll.FastScrollRecyclerView;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;

@@ -16,6 +16,7 @@ import com.gorjoe.tunplmus.MediaPlayerActivity;
 import com.gorjoe.tunplmus.R;
 import com.gorjoe.tunplmus.Utils.SongHandler;
 import com.gorjoe.tunplmus.SongListActivity;
+import com.gorjoe.tunplmus.Utils.SongMediaStore;
 import com.gorjoe.tunplmus.models.SongModel;
 import com.l4digital.fastscroll.FastScroller;
 
@@ -40,7 +41,7 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         SongModel model = list.get(position);
-        String songName = SongListActivity.getAudioFilesArray().get(position).getTitle();
+        String songName = SongMediaStore.getAudioFilesArray().get(position).getTitle();
         holder.name.setText(model.getName());
         holder.author.setText(model.getAuthor());
         holder.time.setText(SongHandler.convertToMMSS(model.getDuration()));
@@ -70,7 +71,7 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.ViewHo
 
     @Override
     public String getSectionText(int position) {
-        return SongListActivity.getAudioFilesArray().get(position).getTitle().substring(0, 1);
+        return SongMediaStore.getAudioFilesArray().get(position).getTitle().substring(0, 1);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

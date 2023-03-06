@@ -49,7 +49,7 @@ public class SongHandler{
             }
 
             if (!wasPlaying) {
-                Song selectedAudioFile = SongListActivity.getAudioFilesArray().get(selectedIndex);
+                Song selectedAudioFile = SongMediaStore.getAudioFilesArray().get(selectedIndex);
                 String filePath = selectedAudioFile.getPath();
                 File selectedFile = new File(filePath);
 

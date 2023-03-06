@@ -1,20 +1,30 @@
 package com.gorjoe.tunplmus;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import com.bluewhaleyt.common.PermissionUtil;
+import com.bluewhaleyt.crashdebugger.CrashDebugger;
+import com.bluewhaleyt.moderndialog.ModernDialog;
 import com.google.android.material.tabs.TabLayout;
+import com.gorjoe.tunplmus.Utils.DialogUtils;
+import com.gorjoe.tunplmus.Utils.SongMediaStore;
 import com.gorjoe.tunplmus.databinding.ActivityMainBinding;
 import com.gorjoe.tunplmus.fragments.DownloadFragment;
 import com.gorjoe.tunplmus.fragments.MediaPlayerFragment;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
+    private ModernDialog dialog = DialogUtils.dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        CrashDebugger.init(this);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -52,5 +62,26 @@ public class MainActivity extends AppCompatActivity {
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!PermissionUtil.isAlreadyGrantedExternalStorageAccess()) {
+            DialogUtils.showRequirePermissionDialog(this);
+
+        } else {
+            if (dialog != null && dialog.dialogDef.isShowing()) {
+                dialog.dialogDef.dismiss();
+            }
+            SharedPreferences sp = getSharedPreferences("directory", Context.MODE_PRIVATE);
+            SongMediaStore.FilterOnlySongInSpecifyDirectory(this, sp);
+
+            // the below code not working
+            View sl = findViewById(R.id.lvSongsList);
+            binding.lvSongList.setLayoutManager(linearLayoutManager);
+            binding.lvSongList.setAdapter(songlistadapter);
+            binding.lvSongList.getAdapter().notifyDataSetChanged();
+        }
     }
 }

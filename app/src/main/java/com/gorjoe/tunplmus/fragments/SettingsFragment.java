@@ -186,10 +186,8 @@ public class SettingsFragment extends PreferenceFragment {
 //                String path = FileUtil2.getPathFromUri(getContext(), docUri);
                 String path = getSDcardFromTreeUri(docUri).toString();
                 Log.e("path", "path is: " + path);
-                Log.e("path", "treepath is: " + getContentUriFromTreeUri2(docUri));
 //                String path = FileUtil.getFilePathByUri(docUri);
                 myEdit.putString("directory", path);
-                myEdit.putString("treedir", getContentUriFromTreeUri2(docUri).toString());
                 myEdit.commit();
                 //=======================
 //                Uri treeUri = data.getData();

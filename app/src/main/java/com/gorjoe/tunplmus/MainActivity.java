@@ -1,32 +1,37 @@
 package com.gorjoe.tunplmus;
 
 import android.os.Bundle;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import com.google.android.material.tabs.TabLayout;
 import com.gorjoe.tunplmus.databinding.ActivityMainBinding;
 import com.gorjoe.tunplmus.fragments.DownloadFragment;
 import com.gorjoe.tunplmus.fragments.MediaPlayerFragment;
-import com.gorjoe.tunplmus.fragments.SettingsFragment;
-import com.gorjoe.tunplmus.fragments.SongListFragment;
-import nl.joery.animatedbottombar.AnimatedBottomBar;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        binding.bottomBar.setOnTabSelectListener(new AnimatedBottomBar.OnTabSelectListener() {
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MediaPlayerFragment()).commit();
+
+        TabLayout tb = findViewById(R.id.bottom_bar);
+        tb.addTab(tb.newTab().setIcon(R.drawable.ic_baseline_music_note_24));
+        tb.addTab(tb.newTab().setIcon(R.drawable.ic_baseline_list_24));
+        tb.addTab(tb.newTab().setIcon(R.drawable.ic_baseline_download_24));
+        tb.addTab(tb.newTab().setIcon(R.drawable.ic_baseline_settings_24));
+
+        tb.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onTabSelected(int i, @Nullable AnimatedBottomBar.Tab tab, int i1, @NonNull AnimatedBottomBar.Tab tab1) {
+            public void onTabSelected(TabLayout.Tab tab) {
                 Fragment fragment = null;
-                switch (i1) {
+                Log.e("navbar", "id is: " + tab.getPosition());
+                switch (tab.getPosition()) {
                     case 0:
                         fragment = new MediaPlayerFragment();
                         break;
@@ -34,14 +39,18 @@ public class MainActivity extends AppCompatActivity {
                         fragment = new DownloadFragment();
                         break;
                 }
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
+                if (fragment != null) {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
+                }
             }
 
             @Override
-            public void onTabReselected(int i, @NonNull AnimatedBottomBar.Tab tab) {
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
 
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
             }
         });
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MediaPlayerFragment()).commit();
     }
 }

@@ -12,16 +12,13 @@
         android:layout_height="0dp"
         android:layout_weight="1"/>
 
-    <nl.joery.animatedbottombar.AnimatedBottomBar
+    <com.google.android.material.tabs.TabLayout
         android:id="@+id/bottom_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:abb_selectedTabType="text"
-        app:abb_indicatorAppearance="round"
-        app:abb_indicatorMargin="16dp"
-        app:abb_indicatorHeight="4dp"
-        app:abb_tabs="@menu/tabs"
-        app:abb_selectedIndex="0"
-        />
+        android:layout_alignParentBottom="true"
+        app:tabGravity="fill"
+        app:tabIndicatorGravity="top"
+        app:tabMode="fixed" />
 
 </LinearLayout>

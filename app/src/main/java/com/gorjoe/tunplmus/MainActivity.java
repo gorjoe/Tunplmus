@@ -1,12 +1,16 @@
 package com.gorjoe.tunplmus;
 
 import android.os.Bundle;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import com.gorjoe.tunplmus.databinding.ActivityMainBinding;
 import com.gorjoe.tunplmus.fragments.DownloadFragment;
+import com.gorjoe.tunplmus.fragments.MediaPlayerFragment;
+import com.gorjoe.tunplmus.fragments.SettingsFragment;
 import com.gorjoe.tunplmus.fragments.SongListFragment;
 import nl.joery.animatedbottombar.AnimatedBottomBar;
 
@@ -24,9 +28,9 @@ public class MainActivity extends AppCompatActivity {
                 Fragment fragment = null;
                 switch (i1) {
                     case 0:
-                        fragment = new SongListFragment();
+                        fragment = new MediaPlayerFragment();
                         break;
-                    case 1:
+                    case 2:
                         fragment = new DownloadFragment();
                         break;
                 }
@@ -38,6 +42,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SongListFragment()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MediaPlayerFragment()).commit();
     }
 }

@@ -6,23 +6,22 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"></LinearLayout>
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 
     <nl.joery.animatedbottombar.AnimatedBottomBar
         android:id="@+id/bottom_bar"
-        android:background="?colorPrimary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:abb_selectedTabType="text"
         app:abb_indicatorAppearance="round"
         app:abb_indicatorMargin="16dp"
         app:abb_indicatorHeight="4dp"
-        app:abb_rippleEnabled="true"
         app:abb_tabs="@menu/tabs"
-        app:abb_selectedIndex="0" />
+        app:abb_selectedIndex="0"
+        />
 
 </LinearLayout>

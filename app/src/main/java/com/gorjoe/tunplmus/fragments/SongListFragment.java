@@ -8,9 +8,25 @@ import androidx.fragment.app.Fragment;
 import com.gorjoe.tunplmus.R;
 
 public class SongListFragment extends Fragment {
+
+    private FragmentSongLisTBinding binding;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_song_list, container, false);
-        return view;
+        binding = FragmentSongListBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (PermissionUtil.isAlreadyGrantedExternalStorageAccess()) {
+            SharedPreferences sp = getSharedPreferences("directory", Context.MODE_PRIVATE);
+            SongMediaStore.FilterOnlySongInSpecifyDirectory(this, sp);
+
+            binding.lvSongList.setLayoutManager(linearLayoutManager);
+            binding.lvSongList.setAdapter(songlistadapter);
+            binding.lvSongList.getAdapter().notifyDataSetChanged();
+        }
     }
 }

@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.bluewhaleyt.common.PermissionUtil;
 import com.bluewhaleyt.crashdebugger.CrashDebugger;
 import com.bluewhaleyt.moderndialog.ModernDialog;
@@ -79,6 +81,8 @@ public class MainActivity extends AppCompatActivity {
 
             // the below code not working
             View sl = findViewById(R.id.lvSongsList);
+
+            var linearLayoutManager = new LinearLayoutManager(this);
             binding.lvSongList.setLayoutManager(linearLayoutManager);
             binding.lvSongList.setAdapter(songlistadapter);
             binding.lvSongList.getAdapter().notifyDataSetChanged();

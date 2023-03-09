@@ -15,7 +15,6 @@ import com.bluewhaleyt.component.snackbar.SnackbarUtil;
 import com.gorjoe.tunplmus.MediaPlayerActivity;
 import com.gorjoe.tunplmus.R;
 import com.gorjoe.tunplmus.Utils.SongHandler;
-import com.gorjoe.tunplmus.SongListActivity;
 import com.gorjoe.tunplmus.Utils.SongMediaStore;
 import com.gorjoe.tunplmus.models.SongModel;
 import com.l4digital.fastscroll.FastScroller;

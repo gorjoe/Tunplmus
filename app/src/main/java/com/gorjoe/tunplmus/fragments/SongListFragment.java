@@ -3,6 +3,7 @@ package com.gorjoe.tunplmus.fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,9 +11,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bluewhaleyt.common.PermissionUtil;
+import com.gorjoe.tunplmus.MainActivity;
 import com.gorjoe.tunplmus.R;
 import com.gorjoe.tunplmus.Utils.SongMediaStore;
-import com.gorjoe.tunplmus.adapter.SongListAdapter;
 import com.gorjoe.tunplmus.databinding.FragmentSongslistBinding;
 
 public class SongListFragment extends Fragment {
@@ -29,14 +30,12 @@ public class SongListFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if (PermissionUtil.isAlreadyGrantedExternalStorageAccess()) {
-            SharedPreferences sp = requireContext().getSharedPreferences("directory", Context.MODE_PRIVATE);
-            SongMediaStore.FilterOnlySongInSpecifyDirectory(requireActivity(), sp);
+            SharedPreferences sp = getActivity().getSharedPreferences("directory", Context.MODE_PRIVATE);
+            LinearLayoutManager llm = SongMediaStore.FilterOnlySongInSpecifyDirectory(getActivity(), sp);
 
-            var linearLayoutManager = new LinearLayoutManager(requireContext());
-
-            binding.lvSongsList.setLayoutManager(linearLayoutManager);
-            binding.lvSongsList.setAdapter(songlistadapter);
-            binding.lvSongsList.getAdapter().notifyDataSetChanged();
+            binding.lvSongList.setLayoutManager(llm);
+            binding.lvSongList.setAdapter(SongMediaStore.songlistadapter);
+            binding.lvSongList.getAdapter().notifyDataSetChanged();
         }
     }
 }

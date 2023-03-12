@@ -6,7 +6,6 @@ import android.media.MediaPlayer;
 import android.widget.SeekBar;
 import com.gorjoe.tunplmus.R;
 import com.gorjoe.tunplmus.Song;
-import com.gorjoe.tunplmus.SongListActivity;
 import com.gorjoe.tunplmus.databinding.ActivityMediaPlayerBinding;
 import java.io.File;
 import java.io.IOException;

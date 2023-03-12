@@ -12,7 +12,7 @@
         android:layout_weight="1">
 
         <com.l4digital.fastscroll.FastScrollRecyclerView
-            android:id="@+id/lvSongsList"
+            android:id="@+id/lvSongList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:bubbleColor="?colorPrimary"

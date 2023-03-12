@@ -4,11 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import com.bluewhaleyt.common.PermissionUtil;
 import com.bluewhaleyt.crashdebugger.CrashDebugger;
 import com.bluewhaleyt.moderndialog.ModernDialog;
@@ -18,6 +15,7 @@ import com.gorjoe.tunplmus.Utils.SongMediaStore;
 import com.gorjoe.tunplmus.databinding.ActivityMainBinding;
 import com.gorjoe.tunplmus.fragments.DownloadFragment;
 import com.gorjoe.tunplmus.fragments.MediaPlayerFragment;
+import com.gorjoe.tunplmus.fragments.SongListFragment;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
@@ -30,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MediaPlayerFragment()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SongListFragment()).commit();
 
         TabLayout tb = findViewById(R.id.bottom_bar);
         tb.addTab(tb.newTab().setIcon(R.drawable.ic_baseline_music_note_24));
@@ -45,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("navbar", "id is: " + tab.getPosition());
                 switch (tab.getPosition()) {
                     case 0:
-                        fragment = new MediaPlayerFragment();
+                        fragment = new SongListFragment();
                         break;
                     case 2:
                         fragment = new DownloadFragment();
@@ -78,14 +76,6 @@ public class MainActivity extends AppCompatActivity {
             }
             SharedPreferences sp = getSharedPreferences("directory", Context.MODE_PRIVATE);
             SongMediaStore.FilterOnlySongInSpecifyDirectory(this, sp);
-
-            // the below code not working
-            View sl = findViewById(R.id.lvSongsList);
-
-            var linearLayoutManager = new LinearLayoutManager(this);
-            binding.lvSongList.setLayoutManager(linearLayoutManager);
-            binding.lvSongList.setAdapter(songlistadapter);
-            binding.lvSongList.getAdapter().notifyDataSetChanged();
         }
     }
 }

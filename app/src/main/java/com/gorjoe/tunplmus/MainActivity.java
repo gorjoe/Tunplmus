@@ -1,7 +1,6 @@
 package com.gorjoe.tunplmus;
 
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,15 +10,15 @@ import com.bluewhaleyt.crashdebugger.CrashDebugger;
 import com.bluewhaleyt.moderndialog.ModernDialog;
 import com.google.android.material.tabs.TabLayout;
 import com.gorjoe.tunplmus.Utils.DialogUtils;
-import com.gorjoe.tunplmus.Utils.SongMediaStore;
 import com.gorjoe.tunplmus.databinding.ActivityMainBinding;
 import com.gorjoe.tunplmus.fragments.DownloadFragment;
-import com.gorjoe.tunplmus.fragments.MediaPlayerFragment;
 import com.gorjoe.tunplmus.fragments.SongListFragment;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private ModernDialog dialog = DialogUtils.dialog;
+
+    private int lastTab = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,11 +42,15 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("navbar", "id is: " + tab.getPosition());
                 switch (tab.getPosition()) {
                     case 0:
+                        lastTab = 0;
                         fragment = new SongListFragment();
                         break;
                     case 2:
+                        lastTab = 2;
                         fragment = new DownloadFragment();
                         break;
+                    case 3:
+                        startActivity(new Intent(getBaseContext(), SettingsActivity.class));
                 }
                 if (fragment != null) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
@@ -67,6 +70,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        TabLayout tb = findViewById(R.id.bottom_bar);
+        tb.getTabAt(lastTab).select();
+
         if (!PermissionUtil.isAlreadyGrantedExternalStorageAccess()) {
             DialogUtils.showRequirePermissionDialog(this);
 
@@ -74,8 +81,6 @@ public class MainActivity extends AppCompatActivity {
             if (dialog != null && dialog.dialogDef.isShowing()) {
                 dialog.dialogDef.dismiss();
             }
-            SharedPreferences sp = getSharedPreferences("directory", Context.MODE_PRIVATE);
-            SongMediaStore.FilterOnlySongInSpecifyDirectory(this, sp);
         }
     }
 }

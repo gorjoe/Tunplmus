@@ -33,8 +33,6 @@
 
         <activity android:name=".MediaPlayerActivity" />
 
-        <activity android:name=".DownloadActivity" />
-
         <activity android:name=".DownloadHistoryActivity" />
 
         <activity android:name=".SettingsActivity" />

@@ -33,7 +33,7 @@ public class SettingsActivity extends AppCompatActivity {
             if (savedInstanceState != null) {
                 return;
             }
-            getFragmentManager().beginTransaction().add(R.id.frameLayout, new SettingsFragment()).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.frameLayout, new SettingsFragment()).commit();
         }
     }
 

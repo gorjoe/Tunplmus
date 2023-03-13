@@ -6,8 +6,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -16,22 +14,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.preference.Preference;
 
+import com.bluewhaleyt.component.preferences.CustomPreferenceFragment;
 import com.gorjoe.tunplmus.R;
 
 import java.io.File;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class SettingsFragment extends PreferenceFragment {
+public class SettingsFragment extends CustomPreferenceFragment {
 
     private static final int REQUEST_CODE_STORAGE_ACCESS = 9996;
     private String selectedSDCardPath;
     private File sdCardUri = Environment.getExternalStorageDirectory();
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
+        super.onCreatePreferences(savedInstanceState, rootKey);
         addPreferencesFromResource(R.xml.preferences);
 
         SharedPreferences sh = getActivity().getSharedPreferences("directory", Context.MODE_PRIVATE);

@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.bluewhaleyt.component.preferences.TitlePreference
+        app:title="Settings" />
 
     <PreferenceCategory android:title="Test category">
 
@@ -11,19 +15,19 @@
             android:icon="@drawable/ic_baseline_music_note_24"
             android:summary="not selected"/>
         
-        <SwitchPreference
+        <com.bluewhaleyt.component.preferences.material3.Material3SwitchPreference
             android:defaultValue="false"
             android:key="shake"
             android:title="Shake to next song"
             android:summary="Use gyroscope to enable you to shake to next song"/>
         
-        <SwitchPreference
+        <com.bluewhaleyt.component.preferences.material3.Material3SwitchPreference
             android:defaultValue="true"
             android:key="speaker_alert"
             android:title="Speaker Alert"
             android:summary="Alert you when you are playing though speaker" />
         
-        <SwitchPreference
+        <com.bluewhaleyt.component.preferences.material3.Material3SwitchPreference
             android:defaultValue="false"
             android:key="force_mono"
             android:title="Force mono"

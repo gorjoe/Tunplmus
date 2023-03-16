@@ -13,6 +13,8 @@ import com.gorjoe.tunplmus.Utils.DialogUtils;
 import com.gorjoe.tunplmus.databinding.ActivityMainBinding;
 import com.gorjoe.tunplmus.fragments.DownloadFragment;
 import com.gorjoe.tunplmus.fragments.SongListFragment;
+import com.yausername.youtubedl_android.YoutubeDL;
+import com.yausername.youtubedl_android.YoutubeDLException;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
@@ -65,6 +67,12 @@ public class MainActivity extends AppCompatActivity {
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
+
+        try {
+            YoutubeDL.getInstance().init(this);
+        } catch (YoutubeDLException e) {
+            Log.e("ytdl", "failed to initialize youtubedl-android", e);
+        }
     }
 
     @Override

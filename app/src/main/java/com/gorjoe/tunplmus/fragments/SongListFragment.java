@@ -12,6 +12,8 @@ import com.bluewhaleyt.common.PermissionUtil;
 import com.gorjoe.tunplmus.Utils.SongMediaStore;
 import com.gorjoe.tunplmus.databinding.FragmentSongslistBinding;
 
+import static com.gorjoe.tunplmus.Utils.SongMediaStore.songlistadapter;
+
 public class SongListFragment extends Fragment {
 
     private FragmentSongslistBinding binding;
@@ -27,10 +29,11 @@ public class SongListFragment extends Fragment {
         super.onResume();
         if (PermissionUtil.isAlreadyGrantedExternalStorageAccess()) {
             SharedPreferences sp = getActivity().getSharedPreferences("directory", Context.MODE_PRIVATE);
-            LinearLayoutManager llm = SongMediaStore.FilterOnlySongInSpecifyDirectory(getActivity(), sp);
+            SongMediaStore.FilterOnlySongInSpecifyDirectory(getActivity(), sp);
 
-            binding.lvSongList.setLayoutManager(llm);
-            binding.lvSongList.setAdapter(SongMediaStore.songlistadapter);
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext());
+            binding.lvSongList.setLayoutManager(linearLayoutManager);
+            binding.lvSongList.setAdapter(songlistadapter);
             binding.lvSongList.getAdapter().notifyDataSetChanged();
         }
     }

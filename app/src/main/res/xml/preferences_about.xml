@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.bluewhaleyt.component.preferences.TitlePreference
+        app:title="About" />
+
+    <com.bluewhaleyt.component.preferences.material3.Material3ButtonPreference
+        app:title="Warning"
+        app:summary="This is is still WIP, therefore this app may crash sometime, please open an issus if you got one"
+        app:icon="@drawable/ic_baseline_warning_amber_24" />
+
+    <com.bluewhaleyt.component.preferences.ButtonPreference
+        app:key="btn_pref_open_source"
+        app:icon="@drawable/ic_baseline_text_snippet_24"
+        app:title="Open Source"
+        app:summary="See the github repositorie"/>
+
+    <com.bluewhaleyt.component.preferences.ButtonPreference
+        app:key="btn_pref_developer"
+        app:icon="@drawable/ic_baseline_person_24"
+        app:title="Developer"
+        app:summary="Gorjoe"
+        app:selectable="false"/>
+
+    <com.bluewhaleyt.component.preferences.ButtonPreference
+        app:key="btn_pref_translate"
+        app:icon="@drawable/ic_baseline_g_translate_24"
+        app:title="Translate"
+        app:selectable="false"/>
+
+    <com.bluewhaleyt.component.preferences.ButtonPreference
+        app:key="btn_pref_version"
+        app:icon="@drawable/ic_baseline_info_24"
+        app:title="Version"
+        app:selectable="false"/>
+
+</PreferenceScreen>

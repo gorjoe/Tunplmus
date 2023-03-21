@@ -12,6 +12,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.gorjoe.tunplmus.Utils.DialogUtils;
 import com.gorjoe.tunplmus.databinding.ActivityMainBinding;
 import com.gorjoe.tunplmus.fragments.DownloadFragment;
+import com.gorjoe.tunplmus.fragments.SettingsFragment;
 import com.gorjoe.tunplmus.fragments.SongListFragment;
 import com.yausername.youtubedl_android.YoutubeDL;
 import com.yausername.youtubedl_android.YoutubeDLException;
@@ -52,7 +53,10 @@ public class MainActivity extends AppCompatActivity {
                         fragment = new DownloadFragment();
                         break;
                     case 3:
-                        startActivity(new Intent(getBaseContext(), SettingsActivity.class));
+//                        startActivity(new Intent(getBaseContext(), SettingsActivity.class));
+                        lastTab = 3;
+                        fragment = new SettingsFragment();
+                        break;
                 }
                 if (fragment != null) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();

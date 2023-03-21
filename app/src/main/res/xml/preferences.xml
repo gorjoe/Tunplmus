@@ -5,7 +5,9 @@
     <com.bluewhaleyt.component.preferences.TitlePreference
         app:title="Settings" />
 
-    <PreferenceCategory android:title="Test category">
+    <PreferenceCategory
+        android:title="Test category"
+        app:iconSpaceReserved="false">
 
         <Preference
             android:defaultValue="Default value"
@@ -32,6 +34,15 @@
             android:key="force_mono"
             android:title="Force mono"
             android:summary="Force to play all audio file mono" />
+
+        <SeekBarPreference
+            app:key="pref_font_size"
+            app:icon="@drawable/ic_baseline_format_size_24"
+            app:title="Font Size"
+            app:showSeekBarValue="true"
+            app:defaultValue="18"
+            android:max="100"
+            app:min="1"/>
 
     </PreferenceCategory>
 

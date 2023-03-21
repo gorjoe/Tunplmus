@@ -64,7 +64,7 @@ public class SongMediaStore {
         return audioFiles;
     }
 
-    public static LinearLayoutManager FilterOnlySongInSpecifyDirectory(Activity activity, SharedPreferences sh) {
+    public static void FilterOnlySongInSpecifyDirectory(Activity activity, SharedPreferences sh) {
         list = new ArrayList<>();
         songlistadapter = new SongListAdapter(list);
         if (songlistadapter.getItemCount() == 0) {
@@ -101,12 +101,10 @@ public class SongMediaStore {
                     list.get(i).setAuthor(currSong.getArtist());
                     list.get(i).setDuration(currSong.getDuration());
                 }
-                return linearLayoutManager;
 
             } else {
                 Toast.makeText(activity, "Song Directory Not Selected", Toast.LENGTH_SHORT).show();
             }
         }
-        return null;
     }
 }

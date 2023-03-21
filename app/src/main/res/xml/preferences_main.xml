@@ -1,0 +1,19 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.bluewhaleyt.component.preferences.TitlePreference
+        app:title="Main Setting" />
+
+    <com.bluewhaleyt.component.preferences.ButtonPreference
+        app:key="btn_pref_application"
+        app:icon="@drawable/ic_baseline_android_24"
+        app:title="App set"
+        app:layout="@layout/layout_preference_screen_item" />
+
+    <com.bluewhaleyt.component.preferences.ButtonPreference
+        app:key="btn_pref_about"
+        app:icon="@drawable/ic_baseline_info_24"
+        app:title="About"
+        app:layout="@layout/layout_preference_screen_item" />
+
+</PreferenceScreen>

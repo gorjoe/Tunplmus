@@ -3,6 +3,7 @@ package com.gorjoe.tunplmus.Utils;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
+import android.util.Log;
 import android.widget.SeekBar;
 import com.gorjoe.tunplmus.R;
 import com.gorjoe.tunplmus.Song;
@@ -36,15 +37,18 @@ public class SongHandler{
         mediaPlayer.stop();
         mediaPlayer.release();
         mediaPlayer = new MediaPlayer();
+        mediaPlayer.reset();
     }
 
     public static void PlaySong(int selectedIndex) {
         try {
+            Log.e("Song1", "mp is=" + (mediaPlayer != null) + ", wasplaying=" + wasPlaying + ", mp playing=" + mediaPlayer.isPlaying());
 
             if (mediaPlayer != null && mediaPlayer.isPlaying()) {
                 StopAllSong();
                 setValue(0);
-                wasPlaying = true;
+                wasPlaying = false;
+                Log.e("Song", "has reset!");
             }
 
             if (!wasPlaying) {
@@ -61,7 +65,7 @@ public class SongHandler{
 
                 mediaPlayer.start();
             }
-            wasPlaying = false;
+//            wasPlaying = false;
         } catch (IOException e) {
             e.printStackTrace();
         }

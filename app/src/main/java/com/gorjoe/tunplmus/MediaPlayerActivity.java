@@ -3,6 +3,7 @@ package com.gorjoe.tunplmus;
 import androidx.appcompat.app.AppCompatActivity;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.SeekBar;
 import com.bluewhaleyt.common.CommonUtil;
 import com.bluewhaleyt.crashdebugger.CrashDebugger;
@@ -87,7 +88,7 @@ public class MediaPlayerActivity extends AppCompatActivity {
                                 public void run() {
                                     binding.timeNow.setText(SongHandler.convertToMMSS(finalCurrentPos));
                                     binding.seekBar.setProgress((int) Math.round(finalCurrentPos / SongHandler.sBarStep));
-//                                    Log.e("loop", "loop pos: " + (int) Math.round(finalCurrentPos / SongHandler.sBarStep) + " / " + binding.seekBar.getMax());
+                                    Log.e("loop", "loop pos: " + (int) Math.round(finalCurrentPos / SongHandler.sBarStep) + " / " + binding.seekBar.getMax());
                                 }
                             });
                         }
@@ -105,7 +106,7 @@ public class MediaPlayerActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        stopThread();
+//        stopThread();
     }
 
     public static void stopThread() {

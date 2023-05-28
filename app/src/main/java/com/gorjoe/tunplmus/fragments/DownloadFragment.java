@@ -87,7 +87,7 @@ public class DownloadFragment extends Fragment {
 //        showStart();
 
         downloading = true;
-        Disposable disposable = Observable.fromCallable(() -> YoutubeDL.getInstance().execute(request, processId, callback))
+        Disposable disposable = Observable.fromCallable(() -> YoutubeDL.getInstance().execute(request, processId))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(youtubeDLResponse -> {

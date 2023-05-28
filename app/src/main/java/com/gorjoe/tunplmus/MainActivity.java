@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tb = findViewById(R.id.bottom_bar);
         tb.addTab(tb.newTab().setIcon(R.drawable.ic_baseline_music_note_24));
         tb.addTab(tb.newTab().setIcon(R.drawable.ic_baseline_list_24));
-        tb.addTab(tb.newTab().setIcon(R.drawable.ic_baseline_search_24));
         tb.addTab(tb.newTab().setIcon(R.drawable.ic_baseline_download_24));
         tb.addTab(tb.newTab().setIcon(R.drawable.ic_baseline_settings_24));
 
@@ -70,13 +69,13 @@ public class MainActivity extends AppCompatActivity {
                         lastTab = 0;
                         fragment = new SongListFragment();
                         break;
-                    case 3:
-                        lastTab = 3;
+                    case 2:
+                        lastTab = 2;
                         fragment = new DownloadFragment();
                         break;
-                    case 4:
+                    case 3:
 //                        startActivity(new Intent(getBaseContext(), SettingsActivity.class));
-                        lastTab = 4;
+                        lastTab = 3;
                         fragment = new SettingsFragment();
                         break;
                 }

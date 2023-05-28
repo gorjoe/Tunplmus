@@ -76,7 +76,7 @@ public class MediaPlayerActivity extends AppCompatActivity {
 
                 while (!stopThread && mediaPlayer != null && mediaPlayer.isPlaying() && currentPos < total) {
                     try {
-                        Thread.sleep(500);
+//                        Thread.sleep(500);
                         synchronized (this) {
                             wait(1000);
 

@@ -1,15 +1,24 @@
 package com.gorjoe.tunplmus;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.bluewhaleyt.common.PermissionUtil;
 import com.bluewhaleyt.crashdebugger.CrashDebugger;
 import com.bluewhaleyt.moderndialog.ModernDialog;
 import com.google.android.material.tabs.TabLayout;
 import com.gorjoe.tunplmus.Utils.DialogUtils;
+import com.gorjoe.tunplmus.Utils.SongHandler;
 import com.gorjoe.tunplmus.databinding.ActivityMainBinding;
 import com.gorjoe.tunplmus.fragments.DownloadFragment;
 import com.gorjoe.tunplmus.fragments.SettingsFragment;
@@ -31,6 +40,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SongListFragment()).commit();
+
+        LinearLayout currentsong = findViewById(R.id.layoutCurrentSong);
+        currentsong.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Context context = currentsong.getContext();
+                Intent intent = new Intent(context, MediaPlayerActivity.class);
+                context.startActivity(intent);
+                Activity activity = (Activity) context;
+                activity.overridePendingTransition( R.anim.slide_in_up, 0 );
+            }
+        });
 
         TabLayout tb = findViewById(R.id.bottom_bar);
         tb.addTab(tb.newTab().setIcon(R.drawable.ic_baseline_music_note_24));
@@ -83,6 +104,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        LinearLayout currentsong = findViewById(R.id.layoutCurrentSong);
+        TextView tvSongName = currentsong.findViewById(R.id.tvSongName);
+        Log.e("main", "np=" + SongHandler.nowPlaying);
+        if (SongHandler.nowPlaying != null) {
+            Log.e("main", "title=" + SongHandler.nowPlaying.getTitle());
+            tvSongName.setText(SongHandler.nowPlaying.getTitle());
+        }
 
         TabLayout tb = findViewById(R.id.bottom_bar);
         tb.getTabAt(lastTab).select();

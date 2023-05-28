@@ -36,8 +36,6 @@
 
         <activity android:name=".DownloadHistoryActivity" />
 
-        <activity android:name=".SettingsActivity" />
-
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"

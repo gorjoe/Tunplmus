@@ -87,11 +87,7 @@ public class SongMediaStore {
                 linearLayoutManager.setReverseLayout(true);
 
                 SongMediaStore.getAllAudioFiles(activity, dir);
-                Collections.sort(SongMediaStore.audioFiles, new Comparator<Song>(){
-                    public int compare(Song a, Song b){
-                        return a.getTitle().compareTo(b.getTitle());
-                    }
-                });
+                Collections.sort(SongMediaStore.audioFiles, Comparator.comparing(Song::getTitle));
 
                 for (int i = 0; i < SongMediaStore.audioFiles.size(); i++) {
                     Song currSong = SongMediaStore.audioFiles.get(i);

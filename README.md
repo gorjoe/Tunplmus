@@ -9,7 +9,7 @@ A modern Music App for playing YouTube music offline
 ## Feature
 - [ ] shake the phone to go to next song
 - [ ] configurable font size
-- [ ] speaker alert (configable in setting)
+- [ ] speaker alert (configurable in setting)
 - [ ] Bluetooth support (play through Bluetooth device)
 - [ ] media buttons support (next, prev, play/pause) from external device (bluetooth headphones...)
 - [ ] headset autoplay (autoplay when headset connected)

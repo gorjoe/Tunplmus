@@ -28,7 +28,7 @@ A modern Music App for playing YouTube music offline
 
 ## Get Started
 
-1. Clone the whole repositories and compile yourself
+1. Download the demo(WIP version) in [Action](https://github.com/gorjoe/Tunplmus/actions)(Android CI)
 
 ~~1. Go to [Releases](https://github.com/gorjoe/Tunplmus/releases) and download the latest apk (coming  soon)~~
 

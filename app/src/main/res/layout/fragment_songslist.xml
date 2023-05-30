@@ -6,14 +6,28 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <com.mancj.materialsearchbar.MaterialSearchBar
-        style="@style/MaterialSearchBarLight"
-        app:mt_speechMode="true"
-        app:mt_hint="Custom hint"
-        app:mt_maxSuggestionsCount="0"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/searchBar" />
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:background="@drawable/rectangle_shape">
+
+        <ImageView
+            android:layout_width="@dimen/searchBox_size"
+            android:layout_height="@dimen/searchBox_size"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/ic_baseline_search_24"></ImageView>
+
+        <EditText
+            android:id="@+id/etSearch"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/searchBox_size"
+            android:layout_marginRight="@dimen/searchBox_size"
+            android:layout_weight="1" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

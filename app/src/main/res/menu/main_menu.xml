@@ -3,14 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/menu_download"
-        android:title="Download" />
+        android:id="@+id/menu_loadSongs"
+        android:title="Load Songs" />
 
     <item
-        android:id="@+id/menu_history"
-        android:title="History" />
-
-    <item
-        android:id="@+id/menu_settings"
-        android:title="Settings" />
+        android:id="@+id/menu_downloadHistory"
+        android:title="Download History" />
 </menu>

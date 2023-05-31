@@ -3,11 +3,16 @@ package com.gorjoe.tunplmus;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -17,14 +22,22 @@ import com.bluewhaleyt.common.PermissionUtil;
 import com.bluewhaleyt.crashdebugger.CrashDebugger;
 import com.bluewhaleyt.moderndialog.ModernDialog;
 import com.google.android.material.tabs.TabLayout;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.gorjoe.tunplmus.Utils.DialogUtils;
 import com.gorjoe.tunplmus.Utils.SongHandler;
+import com.gorjoe.tunplmus.Utils.SongMediaStore;
 import com.gorjoe.tunplmus.databinding.ActivityMainBinding;
 import com.gorjoe.tunplmus.fragments.DownloadFragment;
 import com.gorjoe.tunplmus.fragments.SettingsFragment;
 import com.gorjoe.tunplmus.fragments.SongListFragment;
+import com.l4digital.fastscroll.FastScrollRecyclerView;
 import com.yausername.youtubedl_android.YoutubeDL;
 import com.yausername.youtubedl_android.YoutubeDLException;
+
+import java.util.ArrayList;
+
+import static com.gorjoe.tunplmus.Utils.SongMediaStore.songlistadapter;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
@@ -41,15 +54,15 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SongListFragment()).commit();
 
-        LinearLayout currentsong = findViewById(R.id.layoutCurrentSong);
-        currentsong.setOnClickListener(new View.OnClickListener() {
+        LinearLayout currentSong = findViewById(R.id.layoutCurrentSong);
+        currentSong.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Context context = currentsong.getContext();
+                Context context = currentSong.getContext();
                 Intent intent = new Intent(context, MediaPlayerActivity.class);
                 context.startActivity(intent);
                 Activity activity = (Activity) context;
-                activity.overridePendingTransition( R.anim.slide_in_up, 0 );
+                activity.overridePendingTransition(R.anim.slide_in_up, 0 );
             }
         });
 
@@ -63,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 Fragment fragment = null;
-                Log.e("navbar", "id is: " + tab.getPosition());
+                Log.e("navbar", "id is: " + tab.getPosition() + ", lasttab: " + lastTab);
                 switch (tab.getPosition()) {
                     case 0:
                         lastTab = 0;
@@ -95,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             YoutubeDL.getInstance().init(this);
+
         } catch (YoutubeDLException e) {
             Log.e("ytdl", "failed to initialize youtubedl-android", e);
         }
@@ -122,6 +136,50 @@ public class MainActivity extends AppCompatActivity {
             if (dialog != null && dialog.dialogDef.isShowing()) {
                 dialog.dialogDef.dismiss();
             }
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.menu_loadSongs:
+                LoadSongs();
+                return true;
+
+            case R.id.menu_downloadHistory:
+                Log.e("goto", "clicked down history");
+                SharedPreferences sl = getSharedPreferences("SongList", Context.MODE_PRIVATE);
+                String ssl = sl.getString("SongList", "unknown");
+
+                Gson gson = new Gson();
+                ArrayList<ArrayList<String>> playlist = gson.fromJson(ssl, new TypeToken<ArrayList<ArrayList<String>>>(){}.getType());
+                Log.e("sl", "loaded sl: " + playlist);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void LoadSongs() {
+        if (PermissionUtil.isAlreadyGrantedExternalStorageAccess()) {
+            SharedPreferences sp = getSharedPreferences("directory", Context.MODE_PRIVATE);
+            SharedPreferences sl = getSharedPreferences("SongList", Context.MODE_PRIVATE);
+            SongMediaStore.FilterOnlySongInSpecifyDirectory(this, sp, sl);
+
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getBaseContext());
+            FastScrollRecyclerView songList = findViewById(R.id.lvSongList);
+            songList.setLayoutManager(linearLayoutManager);
+            songList.setAdapter(songlistadapter);
+            songList.getAdapter().notifyDataSetChanged();
         }
     }
 }

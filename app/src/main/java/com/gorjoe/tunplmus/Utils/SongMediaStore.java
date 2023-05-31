@@ -9,7 +9,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Toast;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
+import com.google.gson.Gson;
 import com.gorjoe.tunplmus.Song;
 import com.gorjoe.tunplmus.adapter.SongListAdapter;
 import com.gorjoe.tunplmus.models.SongModel;
@@ -21,6 +21,7 @@ import java.util.List;
 public class SongMediaStore {
     public static ArrayList<Song> audioFiles = new ArrayList<Song>();
     private static ArrayList<SongModel> list = new ArrayList<>();
+    public static ArrayList<ArrayList<String>> spSongList = new ArrayList<>();
     public static SongListAdapter songlistadapter = new SongListAdapter(list);
 
     public static ArrayList<Song> getAudioFilesArray() {
@@ -46,6 +47,7 @@ public class SongMediaStore {
                 int durationCol = cursor.getColumnIndex(MediaStore.Audio.Media.DURATION);
                 int dataCol = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
                 int albumCol = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM);
+
                 while (cursor.moveToNext()) {
                     long id = cursor.getLong(idCol);
                     String title = cursor.getString(titleCol);
@@ -57,6 +59,17 @@ public class SongMediaStore {
 
                     if (path.startsWith(dir)) {
                         audioFiles.add(new Song(id, title, artist, duration, path, album, contentUri));
+
+                        ArrayList<String> songitem = new ArrayList<>();
+                        songitem.add(String.valueOf(id));
+                        songitem.add(title);
+                        songitem.add(artist);
+                        songitem.add(String.valueOf(duration));
+                        songitem.add(path);
+                        songitem.add(album);
+                        songitem.add(String.valueOf(contentUri));
+
+                        spSongList.add(songitem);
                     }
                 }
             }
@@ -64,18 +77,15 @@ public class SongMediaStore {
         return audioFiles;
     }
 
-    public static void FilterOnlySongInSpecifyDirectory(Activity activity, SharedPreferences sh) {
+    public static void FilterOnlySongInSpecifyDirectory(Activity activity, SharedPreferences sp, SharedPreferences sl) {
         list = new ArrayList<>();
         songlistadapter = new SongListAdapter(list);
         if (songlistadapter.getItemCount() == 0) {
             // Retrieving the value using its keys the file name
             // must be same in both saving and retrieving the data
 
-            String dir = sh.getString("directory", "unknown");
+            String dir = sp.getString("directory", "unknown");
             Toast.makeText(activity, "dir: " + dir, Toast.LENGTH_LONG).show();
-
-            Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-            Log.e("Test", "mdir: " + musicUri);
             Log.e("Test", "dir: " + dir);
 
             if (!dir.equals("unknown")) {
@@ -86,17 +96,25 @@ public class SongMediaStore {
                 linearLayoutManager.setStackFromEnd(true);
                 linearLayoutManager.setReverseLayout(true);
 
-                SongMediaStore.getAllAudioFiles(activity, dir);
-                Collections.sort(SongMediaStore.audioFiles, Comparator.comparing(Song::getTitle));
+                getAllAudioFiles(activity, dir);
+                Collections.sort(audioFiles, Comparator.comparing(Song::getTitle));
 
-                for (int i = 0; i < SongMediaStore.audioFiles.size(); i++) {
-                    Song currSong = SongMediaStore.audioFiles.get(i);
+                for (int i = 0; i < audioFiles.size(); i++) {
+                    Song currSong = audioFiles.get(i);
 
                     list.add(new SongModel());
                     list.get(i).setName(currSong.getTitle());
                     list.get(i).setAuthor(currSong.getArtist());
                     list.get(i).setDuration(currSong.getDuration());
                 }
+
+                Toast.makeText(activity, list.size() + " songs loaded", Toast.LENGTH_SHORT).show();
+                Log.e("songlist", String.valueOf(spSongList));
+
+                Gson gson = new Gson();
+                String json = gson.toJson(spSongList);
+
+                sl.edit().putString("SongList", json).apply();
 
             } else {
                 Toast.makeText(activity, "Song Directory Not Selected", Toast.LENGTH_SHORT).show();

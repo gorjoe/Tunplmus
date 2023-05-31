@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
-            android:text="Song Name"
+            android:text="Play Some Song!"
             android:ellipsize="marquee"
             android:maxLines="1"/>
 

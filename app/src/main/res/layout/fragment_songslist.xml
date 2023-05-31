@@ -11,21 +11,27 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:weightSum="2"
-        android:background="@drawable/rectangle_shape">
+        android:background="@drawable/rectangle_shape"
+        android:padding="10dp">
 
         <ImageView
             android:layout_width="@dimen/searchBox_size"
             android:layout_height="@dimen/searchBox_size"
             android:layout_alignParentLeft="true"
-            android:layout_marginLeft="10dp"
-            android:background="@drawable/ic_baseline_search_24"></ImageView>
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/ic_baseline_search_24" />
 
         <EditText
             android:id="@+id/etSearch"
             android:layout_width="match_parent"
             android:layout_height="@dimen/searchBox_size"
             android:layout_marginRight="@dimen/searchBox_size"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:textColor="?colorOnBackground"
+            android:background="@null"
+            android:maxLines="1"/>
 
     </LinearLayout>
 
@@ -33,21 +39,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="2">
+        android:weightSum="2"
+        android:layout_marginTop="10dp">
 
         <ImageButton
             android:id="@+id/favoriteBtn"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="40dp"
             android:layout_weight="1"
-            app:srcCompat="@drawable/ic_baseline_favorite_24" />
+            app:srcCompat="@drawable/ic_baseline_favorite_24"
+            android:backgroundTint="?colorOutlineVariant"
+            android:background="@drawable/rectangle_shape"/>
 
         <ImageButton
             android:id="@+id/recentBtn"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_weight="1"
-            app:srcCompat="@drawable/ic_baseline_access_time_24" />
+            app:srcCompat="@drawable/ic_baseline_access_time_24"
+            android:backgroundTint="?colorOutlineVariant"
+            android:background="@drawable/rectangle_shape"/>
 
     </LinearLayout>
 

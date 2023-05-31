@@ -83,13 +83,10 @@ public class MediaPlayerActivity extends AppCompatActivity {
                             currentPos = mediaPlayer.getCurrentPosition();
                             int finalCurrentPos = currentPos;
 
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    binding.timeNow.setText(SongHandler.convertToMMSS(finalCurrentPos));
-                                    binding.seekBar.setProgress((int) Math.round(finalCurrentPos / SongHandler.sBarStep));
-                                    Log.e("loop", "loop pos: " + (int) Math.round(finalCurrentPos / SongHandler.sBarStep) + " / " + binding.seekBar.getMax());
-                                }
+                            runOnUiThread(() -> {
+                                binding.timeNow.setText(SongHandler.convertToMMSS(finalCurrentPos));
+                                binding.seekBar.setProgress((int) Math.round(finalCurrentPos / SongHandler.sBarStep));
+                                Log.e("loop", "loop pos: " + (int) Math.round(finalCurrentPos / SongHandler.sBarStep) + " / " + binding.seekBar.getMax());
                             });
                         }
                     } catch (Exception e) {

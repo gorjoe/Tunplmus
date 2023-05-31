@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.bluewhaleyt.common.DynamicColorsUtil;
 import com.yausername.aria2c.Aria2c;
 import com.yausername.ffmpeg.FFmpeg;
 import com.yausername.youtubedl_android.YoutubeDL;
@@ -21,7 +23,7 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         context = getApplicationContext();
-//        CommonUtil.setDynamicColorsIfAvailable(this);
+        DynamicColorsUtil.setDynamicColorsIfAvailable(this);
         Completable.fromAction(this::initLibraries).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new DisposableCompletableObserver() {
             @Override
             public void onComplete() {

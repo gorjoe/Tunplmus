@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:background="@drawable/rectangle_shape"
+        android:padding="10dp">
+
+        <ImageView
+            android:layout_width="@dimen/searchBox_size"
+            android:layout_height="@dimen/searchBox_size"
+            android:layout_alignParentLeft="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/ic_baseline_search_24" />
+
+        <EditText
+            android:id="@+id/etSearch"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/searchBox_size"
+            android:layout_marginRight="@dimen/searchBox_size"
+            android:layout_weight="1"
+            android:textColor="?colorOnBackground"
+            android:background="@null"
+            android:maxLines="1"/>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <com.l4digital.fastscroll.FastScrollRecyclerView
+            android:id="@+id/lvPlayList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:bubbleColor="?colorPrimary"
+            app:bubbleSize="small"
+            app:bubbleTextColor="?colorOnPrimary"
+            app:handleColor="?colorSurfaceVariant" />
+
+    </FrameLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_baseline_add_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+</LinearLayout>

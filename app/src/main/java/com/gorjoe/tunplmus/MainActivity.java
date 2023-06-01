@@ -10,25 +10,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toolbar;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
 import com.bluewhaleyt.common.PermissionUtil;
 import com.bluewhaleyt.crashdebugger.CrashDebugger;
 import com.bluewhaleyt.moderndialog.ModernDialog;
 import com.google.android.material.tabs.TabLayout;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.gorjoe.tunplmus.Utils.DialogUtils;
 import com.gorjoe.tunplmus.Utils.SongHandler;
 import com.gorjoe.tunplmus.Utils.SongMediaStore;
 import com.gorjoe.tunplmus.databinding.ActivityMainBinding;
 import com.gorjoe.tunplmus.fragments.DownloadFragment;
+import com.gorjoe.tunplmus.fragments.PlayListsFragment;
 import com.gorjoe.tunplmus.fragments.SettingsFragment;
 import com.gorjoe.tunplmus.fragments.SongListFragment;
 import com.l4digital.fastscroll.FastScrollRecyclerView;
@@ -79,11 +74,12 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("navbar", "id is: " + tab.getPosition() + ", lasttab: " + lastTab);
                 switch (tab.getPosition()) {
                     case 0:
-//                        SharedPreferences sp = getSharedPreferences("SongList", Context.MODE_PRIVATE);
-//                        SongMediaStore.renderSongList(sp, MainActivity.this);
-
                         lastTab = 0;
                         fragment = new SongListFragment();
+                        break;
+                    case 1:
+                        lastTab = 1;
+                        fragment = new PlayListsFragment();
                         break;
                     case 2:
                         lastTab = 2;

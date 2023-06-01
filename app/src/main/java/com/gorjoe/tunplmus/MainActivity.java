@@ -79,6 +79,9 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("navbar", "id is: " + tab.getPosition() + ", lasttab: " + lastTab);
                 switch (tab.getPosition()) {
                     case 0:
+//                        SharedPreferences sp = getSharedPreferences("SongList", Context.MODE_PRIVATE);
+//                        SongMediaStore.renderSongList(sp, MainActivity.this);
+
                         lastTab = 0;
                         fragment = new SongListFragment();
                         break;
@@ -126,6 +129,9 @@ public class MainActivity extends AppCompatActivity {
             tvSongName.setText(SongHandler.nowPlaying.getTitle());
         }
 
+        SharedPreferences sp = getSharedPreferences("SongList", Context.MODE_PRIVATE);
+        SongMediaStore.renderSongList(sp, MainActivity.this);
+
         TabLayout tb = findViewById(R.id.bottom_bar);
         tb.getTabAt(lastTab).select();
 
@@ -156,11 +162,8 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.menu_downloadHistory:
                 Log.e("goto", "clicked down history");
-                SharedPreferences sl = getSharedPreferences("SongList", Context.MODE_PRIVATE);
-                String ssl = sl.getString("SongList", "unknown");
-
-                Gson gson = new Gson();
-                ArrayList<ArrayList<String>> playlist = gson.fromJson(ssl, new TypeToken<ArrayList<ArrayList<String>>>(){}.getType());
+                SharedPreferences sp = getSharedPreferences("SongList", Context.MODE_PRIVATE);
+                ArrayList<ArrayList<String>> playlist = SongMediaStore.fetchSongFromSharePreferences(sp);
                 Log.e("sl", "loaded sl: " + playlist);
                 return true;
 
@@ -170,10 +173,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void LoadSongs() {
+        Log.e("load", "loading songs");
         if (PermissionUtil.isAlreadyGrantedExternalStorageAccess()) {
             SharedPreferences sp = getSharedPreferences("directory", Context.MODE_PRIVATE);
             SharedPreferences sl = getSharedPreferences("SongList", Context.MODE_PRIVATE);
-            SongMediaStore.FilterOnlySongInSpecifyDirectory(this, sp, sl);
+//            SongMediaStore.FilterOnlySongInSpecifyDirectory(this, sp, sl);
+            SongMediaStore.getAllAudioFiles(this, sp.getString("directory", "unknown"), sl);
 
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getBaseContext());
             FastScrollRecyclerView songList = findViewById(R.id.lvSongList);

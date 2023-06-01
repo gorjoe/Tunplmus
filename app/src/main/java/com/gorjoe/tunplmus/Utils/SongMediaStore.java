@@ -7,15 +7,14 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.widget.Toast;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.gorjoe.tunplmus.Song;
 import com.gorjoe.tunplmus.adapter.SongListAdapter;
 import com.gorjoe.tunplmus.models.SongModel;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class SongMediaStore {
@@ -28,7 +27,7 @@ public class SongMediaStore {
         return audioFiles;
     }
 
-    public static List<Song> getAllAudioFiles(Activity activity, String dir) {
+    public static List<Song> getAllAudioFiles(Activity activity, String dir, SharedPreferences sl) {
         audioFiles.clear();
 
         String[] projection = {
@@ -72,53 +71,100 @@ public class SongMediaStore {
                         spSongList.add(songitem);
                     }
                 }
+                Gson gson = new Gson();
+                String json = gson.toJson(spSongList);
+
+                sl.edit().putString("SongList", json).apply();
             }
         }
         return audioFiles;
     }
 
-    public static void FilterOnlySongInSpecifyDirectory(Activity activity, SharedPreferences sp, SharedPreferences sl) {
-        list = new ArrayList<>();
-        songlistadapter = new SongListAdapter(list);
-        if (songlistadapter.getItemCount() == 0) {
-            // Retrieving the value using its keys the file name
-            // must be same in both saving and retrieving the data
+//    public static void FilterOnlySongInSpecifyDirectory(Activity activity, SharedPreferences sp, SharedPreferences sl) {
+//        list = new ArrayList<>();
+//        songlistadapter = new SongListAdapter(list);
+//        if (songlistadapter.getItemCount() == 0) {
+//            // Retrieving the value using its keys the file name
+//            // must be same in both saving and retrieving the data
+//
+//            String dir = sp.getString("directory", "unknown");
+//            Toast.makeText(activity, "dir: " + dir, Toast.LENGTH_LONG).show();
+//            Log.e("Test", "dir: " + dir);
+//
+//            if (!dir.equals("unknown")) {
+//                // loop file to screen
+//                ArrayList<String> files = new ArrayList<>();
+//
+//                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(activity);
+//                linearLayoutManager.setStackFromEnd(true);
+//                linearLayoutManager.setReverseLayout(true);
+//
+//                getAllAudioFiles(activity, dir);
+//                Collections.sort(audioFiles, Comparator.comparing(Song::getTitle));
+//
+//                for (int i = 0; i < audioFiles.size(); i++) {
+//                    Song currSong = audioFiles.get(i);
+//
+//                    list.add(new SongModel());
+//                    list.get(i).setName(currSong.getTitle());
+//                    list.get(i).setAuthor(currSong.getArtist());
+//                    list.get(i).setDuration(currSong.getDuration());
+//                }
+//
+//                Toast.makeText(activity, list.size() + " songs loaded", Toast.LENGTH_SHORT).show();
+//                Log.e("songlist", String.valueOf(spSongList));
+//
+//                Gson gson = new Gson();
+//                String json = gson.toJson(spSongList);
+//
+//                sl.edit().putString("SongList", json).apply();
+//
+//            } else {
+//                Toast.makeText(activity, "Song Directory Not Selected", Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//    }
 
-            String dir = sp.getString("directory", "unknown");
-            Toast.makeText(activity, "dir: " + dir, Toast.LENGTH_LONG).show();
-            Log.e("Test", "dir: " + dir);
+    public static void renderSongList(SharedPreferences sp, Activity activity) {
+        try {
+            list = new ArrayList<>();
+            songlistadapter = new SongListAdapter(list);
+            if (songlistadapter.getItemCount() == 0) {
+                ArrayList<ArrayList<String>> playlist = fetchSongFromSharePreferences(sp);
+                if (playlist != null) {
+                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(activity);
+                    linearLayoutManager.setStackFromEnd(true);
+                    linearLayoutManager.setReverseLayout(true);
 
-            if (!dir.equals("unknown")) {
-                // loop file to screen
-                ArrayList<String> files = new ArrayList<>();
+                    // arraylist(1) means sort by title
+                    Collections.sort(playlist, (o1, o2) -> o1.get(1).compareTo(o2.get(1)));
 
-                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(activity);
-                linearLayoutManager.setStackFromEnd(true);
-                linearLayoutManager.setReverseLayout(true);
+                    for (int i = 0; i < playlist.size(); i++) {
+                        ArrayList<String> currSong = playlist.get(i);
 
-                getAllAudioFiles(activity, dir);
-                Collections.sort(audioFiles, Comparator.comparing(Song::getTitle));
+                        audioFiles.add(new Song(Long.parseLong(currSong.get(0)), currSong.get(1), currSong.get(2), Long.parseLong(currSong.get(3)), currSong.get(4), currSong.get(5), Uri.parse(currSong.get(6))));
 
-                for (int i = 0; i < audioFiles.size(); i++) {
-                    Song currSong = audioFiles.get(i);
-
-                    list.add(new SongModel());
-                    list.get(i).setName(currSong.getTitle());
-                    list.get(i).setAuthor(currSong.getArtist());
-                    list.get(i).setDuration(currSong.getDuration());
+                        list.add(new SongModel());
+                        list.get(list.size() - 1).setName(currSong.get(1));
+                        list.get(list.size() - 1).setAuthor(currSong.get(2));
+                        list.get(list.size() - 1).setDuration(Long.parseLong(currSong.get(3)));
+                    }
                 }
-
-                Toast.makeText(activity, list.size() + " songs loaded", Toast.LENGTH_SHORT).show();
-                Log.e("songlist", String.valueOf(spSongList));
-
-                Gson gson = new Gson();
-                String json = gson.toJson(spSongList);
-
-                sl.edit().putString("SongList", json).apply();
-
-            } else {
-                Toast.makeText(activity, "Song Directory Not Selected", Toast.LENGTH_SHORT).show();
             }
+        } catch (Exception e) {
+            Log.e("renderer", "cannot render songlist!");
         }
+    }
+
+    public static ArrayList<ArrayList<String>> fetchSongFromSharePreferences(SharedPreferences sp){
+        try {
+            String ssl = sp.getString("SongList", "unknown");
+            Gson gson = new Gson();
+            ArrayList<ArrayList<String>> playlist = gson.fromJson(ssl, new TypeToken<ArrayList<ArrayList<String>>>(){}.getType());
+            return playlist;
+        } catch (Exception e) {
+            Log.e("fetcher", "cannot fetch songlist!");
+        }
+        return null;
     }
 }

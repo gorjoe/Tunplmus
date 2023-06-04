@@ -17,6 +17,11 @@ import androidx.preference.Preference;
 import com.bluewhaleyt.component.preferences.CustomPreferenceFragment;
 import com.gorjoe.tunplmus.R;
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLDecoder;
+
 import static android.content.Context.MODE_PRIVATE;
 
 public class AppFragment extends CustomPreferenceFragment {
@@ -58,7 +63,7 @@ public class AppFragment extends CustomPreferenceFragment {
         startActivityForResult(intent, REQUEST_CODE_STORAGE_ACCESS);
     }
 
-    private String getSDcardFromTreeUri(Uri treeUri) {
+    private String getSDcardFromTreeUri(Uri treeUri) throws UnsupportedEncodingException, MalformedURLException {
         Log.e("input", "Uri: " + treeUri);
         File[] f = ContextCompat.getExternalFilesDirs(getContext().getApplicationContext(), null);
         for (int i = 0; i < f.length; i++) {
@@ -72,9 +77,10 @@ public class AppFragment extends CustomPreferenceFragment {
                 String docId = DocumentsContract.getTreeDocumentId(treeUri);
                 String[] parts = docId.split(":");
 
-                Uri realpath = Uri.parse(path).buildUpon().appendPath(parts[1]).build();
+                Uri unrealpath = Uri.parse(path).buildUpon().appendPath(parts[1]).build();
+                URL realpath = new URL(URLDecoder.decode(unrealpath.toString(), "UTF-8"));
 
-                return realpath.toString().replace("%2F", "/");
+                return realpath.toString();
 
             } else if (treeUri.toString().contains(loc)) {
                 Log.d("DIRS", path); //sdcard and internal and usb
@@ -82,9 +88,10 @@ public class AppFragment extends CustomPreferenceFragment {
                 String docId = DocumentsContract.getTreeDocumentId(treeUri);
                 String[] parts = docId.split(":");
 
-                Uri realpath = Uri.parse(path).buildUpon().appendPath(parts[1]).build();
+                Uri unrealpath = Uri.parse(path).buildUpon().appendPath(parts[1]).build();
+                URL realpath = new URL(URLDecoder.decode(unrealpath.toString(), "UTF-8"));
 
-                return realpath.toString().replace("%2F", "/");
+                return realpath.toString();
             }
         }
         return treeUri.toString();
@@ -97,14 +104,21 @@ public class AppFragment extends CustomPreferenceFragment {
         switch(requestCode) {
             case REQUEST_CODE_STORAGE_ACCESS:
                 // Storing data into SharedPreferences
-                SharedPreferences sharedPreferences = getActivity().getSharedPreferences("directory", MODE_PRIVATE);
-                SharedPreferences.Editor myEdit = sharedPreferences.edit();
-                Uri uri = data.getData();
-                Uri docUri = DocumentsContract.buildDocumentUriUsingTree(uri, DocumentsContract.getTreeDocumentId(uri));
-                String path = getSDcardFromTreeUri(docUri);
-                Log.e("path", "path is: " + path);
-                myEdit.putString("directory", path);
-                myEdit.commit();
+                try {
+                    SharedPreferences sharedPreferences = getActivity().getSharedPreferences("directory", MODE_PRIVATE);
+                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                    Uri uri = data.getData();
+                    Uri docUri = DocumentsContract.buildDocumentUriUsingTree(uri, DocumentsContract.getTreeDocumentId(uri));
+                    String path = null;
+
+                    path = getSDcardFromTreeUri(docUri);
+
+                    Log.e("path", "path is: " + path);
+                    myEdit.putString("directory", path);
+                    myEdit.commit();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
         }
     }

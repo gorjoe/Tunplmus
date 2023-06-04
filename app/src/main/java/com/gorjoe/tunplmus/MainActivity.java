@@ -178,6 +178,7 @@ public class MainActivity extends AppCompatActivity {
 
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getBaseContext());
             FastScrollRecyclerView songList = findViewById(R.id.lvSongList);
+            songList.removeAllViewsInLayout();
             songList.setLayoutManager(linearLayoutManager);
             songList.setAdapter(songlistadapter);
             songList.getAdapter().notifyDataSetChanged();

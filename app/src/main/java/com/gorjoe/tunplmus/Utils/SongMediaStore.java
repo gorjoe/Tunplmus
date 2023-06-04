@@ -29,6 +29,7 @@ public class SongMediaStore {
 
     public static List<Song> getAllAudioFiles(Activity activity, String dir, SharedPreferences sl) {
         audioFiles.clear();
+        spSongList.clear();
 
         String[] projection = {
                 MediaStore.Audio.Media._ID,
@@ -73,7 +74,7 @@ public class SongMediaStore {
                 }
                 Gson gson = new Gson();
                 String json = gson.toJson(spSongList);
-
+                sl.edit().remove("SongList").apply();
                 sl.edit().putString("SongList", json).apply();
             }
         }

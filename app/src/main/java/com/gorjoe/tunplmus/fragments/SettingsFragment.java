@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.preference.Preference;
@@ -26,7 +28,6 @@ public class SettingsFragment extends CustomPreferenceFragment {
 
     private void init() {
         try {
-
             var btnPrefApp = findPreference("btn_pref_application");
             var btnPrefEditor = findPreference("btn_pref_editor");
             var btnPrefCodeStyle = findPreference("btn_pref_coding_style");
@@ -36,7 +37,6 @@ public class SettingsFragment extends CustomPreferenceFragment {
             intentFragment(btnPrefAbout, new AboutFragment());
 
         } catch (Exception e) {
-//            SnackbarUtil.makeErrorSnackbar(requireActivity(), e.getMessage(), e.toString());
             Log.e("preferenceBtn", e.getMessage());
         }
 
@@ -49,6 +49,7 @@ public class SettingsFragment extends CustomPreferenceFragment {
         });
     }
 
+    @NonNull
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return super.onCreateView(inflater, container, savedInstanceState);

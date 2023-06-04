@@ -2,10 +2,8 @@ package com.gorjoe.tunplmus.fragments.Preferences;
 
 import android.os.Bundle;
 import com.bluewhaleyt.common.ApplicationUtil;
-import com.bluewhaleyt.common.IntentUtil;
 import com.bluewhaleyt.component.preferences.CustomPreferenceFragment;
 import com.bluewhaleyt.component.snackbar.SnackbarUtil;
-import com.bluewhaleyt.debug.Constants;
 import com.gorjoe.tunplmus.R;
 
 public class AboutFragment extends CustomPreferenceFragment {
@@ -18,7 +16,6 @@ public class AboutFragment extends CustomPreferenceFragment {
 
     private void init() {
         try {
-
             var prefOpenSource = findPreference("btn_pref_open_source");
             var prefDeveloper = findPreference("btn_pref_developer");
             var prefTranslate = findPreference("btn_pref_translate");

@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.preference.Preference;
@@ -19,15 +21,13 @@ import com.gorjoe.tunplmus.R;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLDecoder;
 
 import static android.content.Context.MODE_PRIVATE;
 
 public class AppFragment extends CustomPreferenceFragment {
 
     private static final int REQUEST_CODE_STORAGE_ACCESS = 9996;
-    private File sdCardUri = Environment.getExternalStorageDirectory();
+    private final File sdCardUri = Environment.getExternalStorageDirectory();
 
     @Override
     public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
@@ -63,35 +63,23 @@ public class AppFragment extends CustomPreferenceFragment {
         startActivityForResult(intent, REQUEST_CODE_STORAGE_ACCESS);
     }
 
-    private String getSDcardFromTreeUri(Uri treeUri) throws UnsupportedEncodingException, MalformedURLException {
+    private String getPathFromTreeUri(Uri treeUri) throws UnsupportedEncodingException, MalformedURLException {
         Log.e("input", "Uri: " + treeUri);
         File[] f = ContextCompat.getExternalFilesDirs(getContext().getApplicationContext(), null);
-        for (int i = 0; i < f.length; i++) {
-            String path = f[i].getParent().replace("/Android/data/", "").replace(getContext().getPackageName(), "");
+        for (File file : f) {
+            String path = file.getParent().replace("/Android/data/", "").replace(getContext().getPackageName(), "");
 
             Log.e("paths", treeUri.toString() + " && " + path);
 
             String loc = path.substring(9);
 
-            if (treeUri.toString().contains("primary") && path.contains("emulated")) {
+            if ((treeUri.toString().contains("primary") && path.contains("emulated")) || treeUri.toString().contains(loc)) {
                 String docId = DocumentsContract.getTreeDocumentId(treeUri);
                 String[] parts = docId.split(":");
 
-                Uri unrealpath = Uri.parse(path).buildUpon().appendPath(parts[1]).build();
-                String realpath = Uri.decode(unrealpath.toString());
+                Uri realPath = Uri.parse(path).buildUpon().appendPath(parts[1]).build();
 
-                return realpath;
-
-            } else if (treeUri.toString().contains(loc)) {
-                Log.d("DIRS", path); //sdcard and internal and usb
-
-                String docId = DocumentsContract.getTreeDocumentId(treeUri);
-                String[] parts = docId.split(":");
-
-                Uri unrealpath = Uri.parse(path).buildUpon().appendPath(parts[1]).build();
-                String realpath = Uri.decode(unrealpath.toString());
-
-                return realpath;
+                return Uri.decode(realPath.toString());
             }
         }
         return treeUri.toString();
@@ -106,16 +94,11 @@ public class AppFragment extends CustomPreferenceFragment {
                 // Storing data into SharedPreferences
                 try {
                     SharedPreferences sharedPreferences = getActivity().getSharedPreferences("directory", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-                    Uri uri = data.getData();
-                    Uri docUri = DocumentsContract.buildDocumentUriUsingTree(uri, DocumentsContract.getTreeDocumentId(uri));
-                    String path = null;
-
-                    path = getSDcardFromTreeUri(docUri);
+                    Uri docUri = DocumentsContract.buildDocumentUriUsingTree(data.getData(), DocumentsContract.getTreeDocumentId(data.getData()));
+                    String path = getPathFromTreeUri(docUri);
 
                     Log.e("path", "path is: " + path);
-                    myEdit.putString("directory", path);
-                    myEdit.commit();
+                    sharedPreferences.edit().putString("directory", path).apply();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -123,8 +106,9 @@ public class AppFragment extends CustomPreferenceFragment {
         }
     }
 
+    @NonNull
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 }

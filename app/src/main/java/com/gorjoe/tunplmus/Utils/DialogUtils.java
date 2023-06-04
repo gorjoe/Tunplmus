@@ -1,9 +1,6 @@
 package com.gorjoe.tunplmus.Utils;
 
-import android.content.Context;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.bluewhaleyt.common.PermissionUtil;
 import com.bluewhaleyt.moderndialog.ModernDialog;
 
@@ -17,9 +14,7 @@ public class DialogUtils {
                         "\nIn order to access your music file" +
                         "\n Please allow it in the next pop up")
                 .setCancelable(false, false)
-                .setPositiveButton("OK", v -> {
-                    PermissionUtil.requestAllFileAccess(activity);
-                })
+                .setPositiveButton("OK", v -> PermissionUtil.requestAllFileAccess(activity))
                 .setNegativeButton(false)
                 .show();
     }

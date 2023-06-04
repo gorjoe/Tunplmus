@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.bluewhaleyt.common.DynamicColorsUtil;
 import com.yausername.aria2c.Aria2c;
 import com.yausername.ffmpeg.FFmpeg;
@@ -16,7 +15,6 @@ import io.reactivex.observers.DisposableCompletableObserver;
 import io.reactivex.schedulers.Schedulers;
 
 public class App extends Application {
-
     private static Context context;
 
     @Override

@@ -12,7 +12,6 @@ public class Song {
     private String salbum;
     private Uri scontentUri;
 
-//    public Song(String songFilePath, String songTitle, String songArtist, String songAlbum, long songDuration) {
     public Song(long id, String title, String artist, long duration, String path, String album, Uri contentUri) {
         sid = id;
         stitle = title;

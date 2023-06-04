@@ -15,10 +15,9 @@ import com.gorjoe.tunplmus.adapter.SongListAdapter;
 import com.gorjoe.tunplmus.models.SongModel;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 public class SongMediaStore {
-    public static ArrayList<Song> audioFiles = new ArrayList<Song>();
+    public static ArrayList<Song> audioFiles = new ArrayList<>();
     private static ArrayList<SongModel> list = new ArrayList<>();
     public static ArrayList<ArrayList<String>> spSongList = new ArrayList<>();
     public static SongListAdapter songlistadapter = new SongListAdapter(list);
@@ -27,7 +26,7 @@ public class SongMediaStore {
         return audioFiles;
     }
 
-    public static List<Song> getAllAudioFiles(Activity activity, String dir, SharedPreferences sl) {
+    public static void getAllAudioFiles(Activity activity, String dir, SharedPreferences sl) {
         audioFiles.clear();
         spSongList.clear();
 
@@ -60,16 +59,16 @@ public class SongMediaStore {
                     if (path.startsWith(dir)) {
                         audioFiles.add(new Song(id, title, artist, duration, path, album, contentUri));
 
-                        ArrayList<String> songitem = new ArrayList<>();
-                        songitem.add(String.valueOf(id));
-                        songitem.add(title);
-                        songitem.add(artist);
-                        songitem.add(String.valueOf(duration));
-                        songitem.add(path);
-                        songitem.add(album);
-                        songitem.add(String.valueOf(contentUri));
+                        ArrayList<String> songItem = new ArrayList<>();
+                        songItem.add(String.valueOf(id));
+                        songItem.add(title);
+                        songItem.add(artist);
+                        songItem.add(String.valueOf(duration));
+                        songItem.add(path);
+                        songItem.add(album);
+                        songItem.add(String.valueOf(contentUri));
 
-                        spSongList.add(songitem);
+                        spSongList.add(songItem);
                     }
                 }
                 Gson gson = new Gson();
@@ -78,53 +77,7 @@ public class SongMediaStore {
                 sl.edit().putString("SongList", json).apply();
             }
         }
-        return audioFiles;
     }
-
-//    public static void FilterOnlySongInSpecifyDirectory(Activity activity, SharedPreferences sp, SharedPreferences sl) {
-//        list = new ArrayList<>();
-//        songlistadapter = new SongListAdapter(list);
-//        if (songlistadapter.getItemCount() == 0) {
-//            // Retrieving the value using its keys the file name
-//            // must be same in both saving and retrieving the data
-//
-//            String dir = sp.getString("directory", "unknown");
-//            Toast.makeText(activity, "dir: " + dir, Toast.LENGTH_LONG).show();
-//            Log.e("Test", "dir: " + dir);
-//
-//            if (!dir.equals("unknown")) {
-//                // loop file to screen
-//                ArrayList<String> files = new ArrayList<>();
-//
-//                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(activity);
-//                linearLayoutManager.setStackFromEnd(true);
-//                linearLayoutManager.setReverseLayout(true);
-//
-//                getAllAudioFiles(activity, dir);
-//                Collections.sort(audioFiles, Comparator.comparing(Song::getTitle));
-//
-//                for (int i = 0; i < audioFiles.size(); i++) {
-//                    Song currSong = audioFiles.get(i);
-//
-//                    list.add(new SongModel());
-//                    list.get(i).setName(currSong.getTitle());
-//                    list.get(i).setAuthor(currSong.getArtist());
-//                    list.get(i).setDuration(currSong.getDuration());
-//                }
-//
-//                Toast.makeText(activity, list.size() + " songs loaded", Toast.LENGTH_SHORT).show();
-//                Log.e("songlist", String.valueOf(spSongList));
-//
-//                Gson gson = new Gson();
-//                String json = gson.toJson(spSongList);
-//
-//                sl.edit().putString("SongList", json).apply();
-//
-//            } else {
-//                Toast.makeText(activity, "Song Directory Not Selected", Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//    }
 
     public static void renderSongList(SharedPreferences sp, Activity activity) {
         try {
@@ -137,7 +90,7 @@ public class SongMediaStore {
                     linearLayoutManager.setStackFromEnd(true);
                     linearLayoutManager.setReverseLayout(true);
 
-                    // arraylist(1) means sort by title
+                    // get(1) means sort by title
                     Collections.sort(playlist, (o1, o2) -> o1.get(1).compareTo(o2.get(1)));
 
                     for (int i = 0; i < playlist.size(); i++) {
@@ -153,7 +106,7 @@ public class SongMediaStore {
                 }
             }
         } catch (Exception e) {
-            Log.e("renderer", "cannot render songlist!");
+            Log.e("renderer", "cannot render songList!");
         }
     }
 
@@ -161,10 +114,9 @@ public class SongMediaStore {
         try {
             String ssl = sp.getString("SongList", "unknown");
             Gson gson = new Gson();
-            ArrayList<ArrayList<String>> playlist = gson.fromJson(ssl, new TypeToken<ArrayList<ArrayList<String>>>(){}.getType());
-            return playlist;
+            return gson.fromJson(ssl, new TypeToken<ArrayList<ArrayList<String>>>(){}.getType());
         } catch (Exception e) {
-            Log.e("fetcher", "cannot fetch songlist!");
+            Log.e("fetcher", "cannot fetch songList!");
         }
         return null;
     }

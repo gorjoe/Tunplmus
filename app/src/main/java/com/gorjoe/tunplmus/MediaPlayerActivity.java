@@ -36,11 +36,11 @@ public class MediaPlayerActivity extends AppCompatActivity {
         });
         binding.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
-            int seektime = 0;
+            int seekTime = 0;
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                seektime = i;
+                seekTime = i;
 
                 int x = (int) Math.ceil(i / 1000f);
 

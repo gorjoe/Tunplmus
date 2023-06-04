@@ -19,10 +19,10 @@ public class SongHandler{
     private static boolean wasPlaying = false;
     private static SeekBar sBar;
     public static double sBarStep = 0;
-    private static ActivityMediaPlayerBinding objbinding = null;
+    private static ActivityMediaPlayerBinding objBinding = null;
 
-    public SongHandler(SeekBar seebar) {
-        this.sBar = seebar;
+    public SongHandler(SeekBar seekbar) {
+        this.sBar = seekbar;
     }
 
     public static void setValue(int value) {
@@ -30,7 +30,7 @@ public class SongHandler{
     }
 
     public static void initBinding(ActivityMediaPlayerBinding binding) {
-        objbinding = binding;
+        objBinding = binding;
     }
 
     public static void StopAllSong() {
@@ -42,7 +42,7 @@ public class SongHandler{
 
     public static void PlaySong(int selectedIndex) {
         try {
-            Log.e("Song1", "mp is=" + (mediaPlayer != null) + ", wasplaying=" + wasPlaying + ", mp playing=" + mediaPlayer.isPlaying());
+            Log.e("Song1", "mp is=" + (mediaPlayer != null) + ", wasPlaying=" + wasPlaying + ", mp playing=" + mediaPlayer.isPlaying());
 
             if (mediaPlayer != null && mediaPlayer.isPlaying()) {
                 StopAllSong();
@@ -57,7 +57,6 @@ public class SongHandler{
                 File selectedFile = new File(filePath);
 
                 nowPlaying = selectedAudioFile;
-//                mediaPlayer.reset();
                 mediaPlayer.setDataSource(selectedFile.getAbsolutePath());
                 mediaPlayer.prepare();
                 mediaPlayer.setLooping(false);
@@ -65,7 +64,6 @@ public class SongHandler{
 
                 mediaPlayer.start();
             }
-//            wasPlaying = false;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -76,13 +74,13 @@ public class SongHandler{
             mediaPlayer.pause();
             Drawable img = context.getResources().getDrawable(R.drawable.ic_baseline_play_arrow_24);
             img.setBounds(0, 0, 60, 60);
-            objbinding.btnPause.setCompoundDrawables(img, null, null, null);
+            objBinding.btnPause.setCompoundDrawables(img, null, null, null);
 
         } else {
             mediaPlayer.start();
             Drawable img = context.getResources().getDrawable(R.drawable.ic_baseline_pause_24);
             img.setBounds(0, 0, 60, 60);
-            objbinding.btnPause.setCompoundDrawables(img, null, null, null);
+            objBinding.btnPause.setCompoundDrawables(img, null, null, null);
         }
     }
 
@@ -91,12 +89,7 @@ public class SongHandler{
     }
 
     public static void ToggleLoopSong() {
-        if (mediaPlayer.isLooping()) {
-            mediaPlayer.setLooping(false);
-
-        } else {
-            mediaPlayer.setLooping(true);
-        }
+        mediaPlayer.setLooping(!mediaPlayer.isLooping());
     }
 
     public static String convertToMMSS(long millis) {

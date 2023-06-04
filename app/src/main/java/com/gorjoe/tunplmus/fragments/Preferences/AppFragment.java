@@ -78,9 +78,9 @@ public class AppFragment extends CustomPreferenceFragment {
                 String[] parts = docId.split(":");
 
                 Uri unrealpath = Uri.parse(path).buildUpon().appendPath(parts[1]).build();
-                URL realpath = new URL(URLDecoder.decode(unrealpath.toString(), "UTF-8"));
+                String realpath = Uri.decode(unrealpath.toString());
 
-                return realpath.toString();
+                return realpath;
 
             } else if (treeUri.toString().contains(loc)) {
                 Log.d("DIRS", path); //sdcard and internal and usb
@@ -89,9 +89,9 @@ public class AppFragment extends CustomPreferenceFragment {
                 String[] parts = docId.split(":");
 
                 Uri unrealpath = Uri.parse(path).buildUpon().appendPath(parts[1]).build();
-                URL realpath = new URL(URLDecoder.decode(unrealpath.toString(), "UTF-8"));
+                String realpath = Uri.decode(unrealpath.toString());
 
-                return realpath.toString();
+                return realpath;
             }
         }
         return treeUri.toString();

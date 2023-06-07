@@ -110,10 +110,17 @@ public class MediaPlayerActivity extends AppCompatActivity {
         stopThread = true;
     }
 
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
+    }
+
     private void init(Bundle savedInstanceState) {
         CommonUtil.setNavigationBarColorWithSurface(this, CommonUtil.SURFACE_FOLLOW_WINDOW_BACKGROUND);
         CommonUtil.setStatusBarColorWithSurface(this, CommonUtil.SURFACE_FOLLOW_DEFAULT_TOOLBAR);
 
         getSupportActionBar().setTitle("Media Player");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 }

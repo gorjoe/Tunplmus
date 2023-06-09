@@ -16,6 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
+
 import com.bluewhaleyt.component.preferences.CustomPreferenceFragment;
 import com.gorjoe.tunplmus.R;
 import java.io.File;
@@ -32,7 +34,7 @@ public class AppFragment extends CustomPreferenceFragment {
     @Override
     public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
         super.onCreatePreferences(savedInstanceState, rootKey);
-        addPreferencesFromResource(R.xml.preferences);
+        setPreferencesFromResource(R.xml.preferences, rootKey);
 
         SharedPreferences sh = getActivity().getSharedPreferences("directory", Context.MODE_PRIVATE);
         String path = sh.getString("directory", "unknown");
@@ -48,7 +50,7 @@ public class AppFragment extends CustomPreferenceFragment {
     @Override
     public void onResume() {
         super.onResume();
-        
+
         SharedPreferences sh = getActivity().getSharedPreferences("directory", Context.MODE_PRIVATE);
         String path = sh.getString("directory", "unknown");
 

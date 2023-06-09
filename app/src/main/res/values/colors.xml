@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <color name="light_background">#fff</color>
+    <color name="light_background_secondary">#e4e4e4</color>
+
+    <color name="light_text_color">#6e6e6e</color>
+    <color name="light_text_color_secondary">#adadad</color>
+
+    <color name="dark_background">#2b2b2b</color>
+    <color name="dark_background_secondary">#383a39</color>
+
+    <color name="dark_text_color">#afb1b3</color>
+    <color name="dark_text_color_secondary">#616366</color>
+
 </resources>

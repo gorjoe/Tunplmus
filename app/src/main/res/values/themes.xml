@@ -2,5 +2,40 @@
     <!-- Base application theme. -->
     <style name="Theme.MyApplication" parent="Theme.Material3.DayNight">
 
+        <item name="alertDialogTheme">@style/Theme.AlertDialog</item>
+        <item name="dialogCornerRadius">28dp</item>
+
+        <!-- Preferences Color Settings -->
+        <item name="colorBackground">@color/light_background</item>
+        <item name="colorBackgroundSecondary">@color/light_background_secondary</item>
+        <item name="colorText">@color/light_text_color</item>
+        <item name="colorTextSecondary">@color/light_text_color_secondary</item>
+        <item name="colorWidgetControlNormal">#000</item>
+
+        <item name="android:windowBackground">?colorBackground</item>
+        <item name="android:statusBarColor">?colorBackground</item>
+        <item name="android:navigationBarColor">?colorBackground</item>
+        <item name="android:windowLightStatusBar">true</item>
+
+        <item name="android:textColor">?colorText</item>
+        <item name="android:textColorSecondary">?colorTextSecondary</item>
+
     </style>
+
+    <style name="Theme.Preferences" parent="Theme.MyApplication">
+        <item name="colorAccent">?colorTextSecondary</item>
+        <item name="colorControlHighlight">?colorBackgroundSecondary</item>
+    </style>
+
+    <style name="Theme.AlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="android:background">?colorBackgroundSecondary</item>
+        <item name="colorControlActivated">?colorWidgetControlNormal</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Theme.AlertDialog.Button</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Theme.AlertDialog.Button</item>
+    </style>
+
+    <style name="Theme.AlertDialog.Button" parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="android:textColor">?colorText</item>
+    </style>
+
 </resources>

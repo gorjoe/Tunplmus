@@ -24,7 +24,7 @@ import com.gorjoe.tunplmus.Utils.SongMediaStore;
 import com.gorjoe.tunplmus.databinding.ActivityMainBinding;
 import com.gorjoe.tunplmus.fragments.DownloadFragment;
 import com.gorjoe.tunplmus.fragments.PlayListsFragment;
-import com.gorjoe.tunplmus.fragments.SettingsFragment;
+import com.gorjoe.tunplmus.fragments.Preferences.SettingsFragment;
 import com.gorjoe.tunplmus.fragments.SongListFragment;
 import com.l4digital.fastscroll.FastScrollRecyclerView;
 import com.yausername.youtubedl_android.YoutubeDL;
